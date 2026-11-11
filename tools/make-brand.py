@@ -1,8 +1,9 @@
 """Deriva os assets de marca a partir das fontes em public/brand/.
 
 Fontes (não geradas):
-  public/brand/logo.png       símbolo
-  public/brand/logo-name.png  lockup empilhado (símbolo sobre a palavra)
+  public/brand/logo.png         símbolo
+  public/brand/logo-name.png    lockup empilhado (símbolo sobre a palavra)
+  public/brand/logo-lockup.png  lockup horizontal oficial, em alta resolução
 
 Derivados:
   public/brand/logo-name-wide.png  lockup horizontal usado no header e no trilho
@@ -17,11 +18,9 @@ from PIL import Image
 
 BRAND = Path(__file__).resolve().parent.parent / "public" / "brand"
 MARK_HEIGHT = 160
-WORD_HEIGHT = 62
-WORD_GAP = 34
+LOCKUP_HEIGHT = 160
 ICON = 512
 ICON_MARGIN = 0.08
-WORD_BAND_TOP = 308  # início da faixa com o nome dentro de logo-name.png
 
 
 def load_mark() -> Image.Image:
@@ -42,30 +41,19 @@ def write_icon(mark: Image.Image) -> None:
     print("ícone:", out)
 
 
-def load_word() -> Image.Image:
-    lock = Image.open(BRAND / "logo-name.png").convert("RGBA")
-    band = lock.crop((0, WORD_BAND_TOP, lock.width, lock.height))
-    box = band.split()[-1].getbbox()
-    if not box:
-        raise SystemExit("faixa do nome vazia em logo-name.png")
-    return band.crop(box)
+def write_lockup() -> None:
+    lockup = Image.open(BRAND / "logo-lockup.png").convert("RGBA")
+    box = lockup.split()[-1].getbbox()
+    if box:
+        lockup = lockup.crop(box)
 
-
-def write_lockup(mark: Image.Image, word: Image.Image) -> None:
-    symbol = mark.resize((MARK_HEIGHT, MARK_HEIGHT), Image.LANCZOS)
-    width = round(word.width * WORD_HEIGHT / word.height)
-    label = word.resize((width, WORD_HEIGHT), Image.LANCZOS)
-
-    out = Image.new("RGBA", (MARK_HEIGHT + WORD_GAP + width, MARK_HEIGHT), (0, 0, 0, 0))
-    out.paste(symbol, (0, 0), symbol)
-    out.paste(label, (MARK_HEIGHT + WORD_GAP, (MARK_HEIGHT - WORD_HEIGHT) // 2), label)
-
+    width = round(lockup.width * LOCKUP_HEIGHT / lockup.height)
     path = BRAND / "logo-name-wide.png"
-    out.save(path)
-    print("lockup:", path, out.size)
+    lockup.resize((width, LOCKUP_HEIGHT), Image.LANCZOS).save(path)
+    print("lockup:", path, (width, LOCKUP_HEIGHT))
 
 
 if __name__ == "__main__":
     mark = load_mark()
     write_icon(mark)
-    write_lockup(mark, load_word())
+    write_lockup()
