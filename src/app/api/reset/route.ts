@@ -6,6 +6,6 @@ export async function POST() {
   const session = await auth();
   const id = session?.user?.id;
   if (!id) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  resetProgress(id);
+  await resetProgress(id);
   return NextResponse.json({ ok: true });
 }

@@ -28,7 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       name: "Demonstração",
       credentials: {},
       async authorize() {
-        const record = upsertUser({
+        const record = await upsertUser({
           email: DEMO_EMAIL,
           name: "Visitante",
           provider: "demo",
@@ -40,7 +40,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (!token.uid && user?.email) {
-        const record = upsertUser({
+        const record = await upsertUser({
           email: user.email,
           name: user.name,
           image: user.image,

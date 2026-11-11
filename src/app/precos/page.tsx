@@ -13,7 +13,7 @@ const plans = [
       "Módulo Água mineral completo (8 estações)",
       "Progresso e troféu do módulo",
       "Favoritos",
-      "Anúncios discretos entre estações",
+      "Anúncios discretos no painel e nas telas de apoio",
     ],
     cta: "Começar agora",
     href: "/entrar",
@@ -24,24 +24,25 @@ const plans = [
     period: "por usuário / mês",
     highlight: true,
     features: [
-      "Todas as linhas liberadas",
+      "Todos os mapas liberados",
       "Sem anúncios",
-      "Histórico e relatório de progresso",
+      "Histórico completo de progresso",
       "Certificado de conclusão por módulo",
     ],
     cta: "Entrar na lista de espera",
     href: "/entrar",
   },
   {
-    name: "Escola e indústria",
-    price: "Sob consulta",
-    period: "por usuário / ano",
+    name: "Escola",
+    price: "R$ 99",
+    period: "a partir de 10 vagas / mês",
     highlight: false,
     features: [
-      "Painel do instrutor e turmas",
-      "Relatório de competências por disciplina",
-      "Conteúdo sob medida para a sua planta",
-      "SSO e gestão de usuários",
+      "A partir de 10 vagas rotativas",
+      "Cada mapa ocupa 1 vaga",
+      "A escola indica qual mapa cada aluno acessa",
+      "Vagas rotativas: realoque quando o aluno concluir",
+      "Painel da turma e relatório de competências",
     ],
     cta: "Falar com vendas",
     href: "/entrar",
@@ -54,10 +55,11 @@ export default function PrecosPage() {
       <SiteHeader />
       <main className="container" style={{ paddingTop: 32, paddingBottom: 60 }}>
         <div className="eyebrow">Planos</div>
-        <h1 style={{ fontSize: 32 }}>Comece grátis, pague por usuário quando precisar</h1>
-        <p style={{ maxWidth: 680 }}>
+        <h1 style={{ fontSize: 32 }}>Comece grátis, pague por vaga quando precisar</h1>
+        <p style={{ maxWidth: 700 }}>
           A cobrança ainda não está ativa nesta versão. O plano gratuito inclui o módulo
-          de Água mineral completo e exibe anúncios discretos entre as estações.
+          de Água mineral completo e exibe anúncios discretos. Individual e Escola entram
+          em cobrança na próxima etapa.
         </p>
 
         <div className="grid grid-3" style={{ marginTop: 24 }}>
@@ -100,14 +102,29 @@ export default function PrecosPage() {
           ))}
         </div>
 
-        <div className="card" style={{ marginTop: 22 }}>
-          <h3 style={{ fontSize: 17 }}>Por que por usuário?</h3>
-          <p className="small" style={{ marginBottom: 0 }}>
-            Cada aluno tem progresso, favoritos e histórico próprios. O preço por usuário
-            acompanha o tamanho da turma e permite que a escola ou a indústria pague
-            apenas por quem realmente treina.
-          </p>
+        <div className="grid grid-2" style={{ marginTop: 22 }}>
+          <div className="card">
+            <h3 style={{ fontSize: 17 }}>Como funciona a vaga do plano Escola</h3>
+            <p className="small" style={{ marginBottom: 0 }}>
+              A instituição contrata um pacote de vagas rotativas, com mínimo de 10. Cada
+              vaga dá acesso a um mapa. A escola decide qual mapa cada aluno acessa; quando
+              o aluno conclui, a vaga volta para o pacote e pode ser atribuída a outro
+              aluno. É o modelo certo para turmas que se renovam a cada semestre.
+            </p>
+          </div>
+          <div className="card">
+            <h3 style={{ fontSize: 17 }}>Por que não é licença por aluno fixo?</h3>
+            <p className="small" style={{ marginBottom: 0 }}>
+              Escola trabalha com turmas que entram e saem. Vaga rotativa evita pagar por
+              aluno inativo e mantém o custo previsível: 10 vagas por R$ 99/mês.
+            </p>
+          </div>
         </div>
+
+        <p className="small" style={{ marginTop: 22 }}>
+          Valores em reais, sem impostos. Individual e Escola incluem certificado e
+          histórico; o plano Escola adiciona painel da turma e relatório por competência.
+        </p>
       </main>
     </>
   );

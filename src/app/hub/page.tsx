@@ -1,7 +1,7 @@
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import AdSlot from "@/components/AdSlot";
-import { requireUser } from "@/lib/session";
+import { requireUser, storageWarning } from "@/lib/session";
 import { moduleStats, TROPHY_LABEL } from "@/lib/progress";
 import { lines, playableModules } from "@/content/catalog";
 
@@ -11,6 +11,7 @@ export default async function HubPage() {
   const user = await requireUser();
   const mainModule = playableModules[0];
   const stats = moduleStats(mainModule, user.progress);
+  const warning = storageWarning();
 
   const lastVisited = Object.entries(user.progress)
     .filter(([, p]) => p.visitedAt)
@@ -40,6 +41,18 @@ export default async function HubPage() {
             Plano {user.plan === "free" ? "gratuito" : "individual"}
           </span>
         </div>
+
+        {warning && (
+          <div
+            className="card"
+            style={{ marginTop: 16, borderColor: "rgba(255,107,107,0.45)" }}
+          >
+            <strong style={{ color: "var(--danger)" }}>Atenção</strong>
+            <p className="small" style={{ margin: "4px 0 0" }}>
+              {warning}
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-3" style={{ marginTop: 20 }}>
           <div className="card" style={{ gridColumn: "span 2" }}>

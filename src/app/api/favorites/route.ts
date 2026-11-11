@@ -11,6 +11,6 @@ export async function POST(request: Request) {
   if (!body.stationId) {
     return NextResponse.json({ error: "stationId é obrigatório" }, { status: 400 });
   }
-  const favorites = toggleFavorite(id, body.stationId);
+  const favorites = await toggleFavorite(id, body.stationId);
   return NextResponse.json({ favorites });
 }

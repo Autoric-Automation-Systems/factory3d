@@ -17,7 +17,7 @@ que está implementado no código. Atualizar a cada entrega.
 | Quiz | pronto | 3 questões por estação, correção imediata, melhor nota salva |
 | Login | parcial | Código pronto para Google; falta criar credenciais OAuth |
 | Plano gratuito com anúncios | pronto | Blocos de anúncio no hub, módulo, landing e painel da estação |
-| Persistência | provisória | Arquivo JSON (`DATA_DIR/db.json`), trocar por Postgres |
+| Persistência | pronta | Redis REST em produção, JSON em local, selecionado por env |
 | Vídeos | preparado | Campo `videoUrl` por estação; hoje a "animação" é a própria cena 3D |
 
 ## Decisões de projeto
@@ -34,10 +34,21 @@ que está implementado no código. Atualizar a cada entrega.
 5. **Anúncio fora da cena.** Nada de banner sobre a máquina: o anúncio aparece
    no painel e nas telas de apoio, preservando a imersão.
 
+## Decisões de negócio (2026-11)
+
+| Tema | Decisão |
+| --- | --- |
+| Demonstração | 3D por enquanto; vídeo real fica para depois |
+| Deploy | Vercel conectada ao GitHub desde o início |
+| Certificado | Incluído no Individual e no Escola; turmas entram com o Escola |
+| Próxima linha | Automotivo |
+| Preço | Individual R$ 29/mês; Escola R$ 99/mês a partir de 10 vagas rotativas, 1 mapa por vaga |
+| Modo prática | Adiado |
+
 ## Lacunas conhecidas
 
 - Credenciais Google não configuradas neste ambiente (login de demonstração).
-- Persistência em arquivo não serve para serverless (Vercel) sem volume.
+- Cobrança não implementada; a página de planos é informativa.
 - Só a linha de água está publicada; as outras existem como catálogo "em breve".
 - Sem testes automatizados; validação foi manual no navegador.
 - Sem som, sem narração, sem trilha.
@@ -46,12 +57,12 @@ que está implementado no código. Atualizar a cada entrega.
 
 ## Próximos passos priorizados
 
-1. Criar credenciais Google OAuth e validar o fluxo completo de login.
-2. Trocar `store.ts` por Postgres (Prisma ou Drizzle) e migrar progresso.
-3. Publicar a linha de refrigerante reaproveitando as mesmas máquinas
-   (xarope, carbonatação e enchedora isobárica).
-4. Gravar vídeos curtos (30–60 s) por estação e preencher `videoUrl`.
-5. Modo prática: checklist de partida com validação de ordem.
+1. Publicar na Vercel, configurar Redis e credenciais Google.
+2. Linha Automotivo: 4 módulos (combustão, elétrico, moto, bicicleta).
+3. Painel de turma: vagas rotativas, mapa por aluno, relatório.
+4. Checkout (Stripe/Mercado Pago) para Individual e Escola.
+5. Vídeos curtos (30–60 s) por estação e preencher `videoUrl`.
+6. Modo prática: checklist de partida com validação de ordem.
 6. Painel do instrutor: turma, progresso agregado, exportação.
 7. Áudio ambiente e feedback sonoro de acerto/erro.
 8. Testes: Playwright para o fluxo de tour e unitários para `progress.ts`.

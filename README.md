@@ -46,10 +46,40 @@ demonstração continua funcionando.
 
 ## Dados
 
-O MVP grava em arquivo JSON (`DATA_DIR/db.json`), com escrita atômica e cache em
-memória. Bom para um servidor único; em deploy serverless (Vercel) o sistema de
-arquivos é efêmero, então o próximo passo é trocar `src/lib/store.ts` por
-Postgres (o `.env.example` já reserva `DATABASE_URL`).
+O `src/lib/store.ts` escolhe o backend em tempo de execução:
+
+| Backend | Quando | Persistência |
+| --- | --- | --- |
+| Redis REST (Upstash / Vercel KV) | `KV_REST_API_URL` + `KV_REST_API_TOKEN` (ou `UPSTASH_REDIS_REST_*`) | Permanente, funciona em serverless |
+| Arquivo JSON | sem essas variáveis | `DATA_DIR/db.json`, bom só para uso local |
+
+Em produção sem Redis o progresso não sobrevive entre requisições, e o hub mostra
+um aviso vermelho dizendo exatamente isso. **Antes de divulgar o link, configure
+o Redis.**
+
+## Deploy na Vercel
+
+1. Conecte o repositório em *Add New Project* (o build é o padrão do Next.js).
+2. Em **Settings → Environment Variables**, cadastre:
+
+| Variável | Valor |
+| --- | --- |
+| `AUTH_SECRET` | `openssl rand -base64 32` |
+| `AUTH_TRUST_HOST` | `true` |
+| `GOOGLE_CLIENT_ID` | do Google Cloud Console |
+| `GOOGLE_CLIENT_SECRET` | do Google Cloud Console |
+
+3. Em **Storage / Marketplace**, adicione **Upstash Redis** (plano free serve) e
+   conecte ao projeto. As variáveis `KV_REST_API_URL` e `KV_REST_API_TOKEN` são
+   criadas automaticamente.
+4. No Google Cloud Console, adicione o domínio de produção:
+   - Origem: `https://SEU-DOMINIO.vercel.app`
+   - Redirect: `https://SEU-DOMINIO.vercel.app/api/auth/callback/google`
+5. Redeploy. O hub não deve mais exibir o aviso de armazenamento.
+
+Sem `GOOGLE_CLIENT_ID`/`SECRET` o botão do Google fica desabilitado e o acesso de
+demonstração continua disponível — útil para revisar a aplicação antes de criar
+as credenciais.
 
 ## Estrutura
 
@@ -96,6 +126,26 @@ galpão; o tipo visual vem de `machine`.
   `Shift` para correr, `E` para examinar, `Esc`/`Tab` para o menu.
 - Celular: joystick à esquerda, arraste na tela para olhar, toque na estação
   quando o aviso aparecer.
+
+## Planos
+
+| Plano | Preço | Escopo |
+| --- | --- | --- |
+| Gratuito | R$ 0 | Módulo Água completo, com anúncios discretos |
+| Individual | R$ 29/mês | Todos os mapas, sem anúncios, certificado |
+| Escola | R$ 99/mês a partir de 10 vagas rotativas | Cada mapa ocupa 1 vaga; a escola indica o mapa de cada aluno; vaga volta ao pacote quando o aluno conclui |
+
+A cobrança ainda não está implementada: as páginas existem, o checkout é o próximo
+passo (Stripe ou Mercado Pago).
+
+## Roadmap
+
+1. Publicar (Vercel + Redis + Google OAuth).
+2. Linha **Automotivo** — carro a combustão, carro elétrico, moto, bicicleta.
+3. Turmas: painel da escola, atribuição de vaga por mapa, relatório.
+4. Modelo de cobrança e checkout.
+5. Vídeos curtos por estação (`videoUrl` já existe no tipo `Station`).
+6. Modo prática com validação de sequência de partida.
 
 ## Aviso
 

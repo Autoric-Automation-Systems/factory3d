@@ -26,12 +26,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "stationId e action são obrigatórios" }, { status: 400 });
   }
 
-  if (action === "visit") markVisited(id, stationId);
-  else if (action === "blocks") markBlocksSeen(id, stationId, body.blockIds ?? []);
-  else if (action === "quiz") saveQuizScore(id, stationId, Number(body.score ?? 0));
+  if (action === "visit") await markVisited(id, stationId);
+  else if (action === "blocks") await markBlocksSeen(id, stationId, body.blockIds ?? []);
+  else if (action === "quiz") await saveQuizScore(id, stationId, Number(body.score ?? 0));
   else return NextResponse.json({ error: "action inválida" }, { status: 400 });
 
-  const user = getUserById(id);
+  const user = await getUserById(id);
   return NextResponse.json({
     progress: user?.progress ?? {},
     favorites: user?.favorites ?? [],
