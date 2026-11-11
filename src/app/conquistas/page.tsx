@@ -1,5 +1,5 @@
 import Link from "next/link";
-import SiteHeader from "@/components/SiteHeader";
+import ShellPage from "@/components/shell/ShellPage";
 import { requireUser } from "@/lib/session";
 import { playableModules, lines } from "@/content/catalog";
 import { moduleStats, overallPercent, TROPHY_LABEL, type Trophy } from "@/lib/progress";
@@ -23,9 +23,8 @@ export default async function ConquistasPage() {
   );
 
   return (
-    <>
-      <SiteHeader />
-      <main className="container" style={{ paddingTop: 28, paddingBottom: 60 }}>
+    <ShellPage user={user}>
+        <div className="stage-scroll">
         <Link href="/hub" className="small muted">
           ← Início
         </Link>
@@ -105,7 +104,7 @@ export default async function ConquistasPage() {
         <p className="small" style={{ marginTop: 22 }}>
           Zerar progresso é possível no suporte. O histórico fica salvo na sua conta.
         </p>
-      </main>
-    </>
+        </div>
+      </ShellPage>
   );
 }

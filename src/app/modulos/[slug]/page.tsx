@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import SiteHeader from "@/components/SiteHeader";
+import ShellPage from "@/components/shell/ShellPage";
 import AdSlot from "@/components/AdSlot";
 import { requireUser } from "@/lib/session";
 import { moduleStats, TROPHY_LABEL } from "@/lib/progress";
@@ -21,26 +21,24 @@ export default async function ModulePage({
 
   if (mod.status === "soon") {
     return (
-      <>
-        <SiteHeader />
-        <main className="container" style={{ paddingTop: 32, paddingBottom: 60 }}>
+      <ShellPage user={user}>
+        <div className="stage-scroll">
           <span className="badge">em breve</span>
           <h1 style={{ fontSize: 28, marginTop: 12 }}>{mod.name}</h1>
           <p style={{ maxWidth: 620 }}>{mod.summary}</p>
           <Link href="/hub" className="btn">
             Voltar ao início
           </Link>
-        </main>
-      </>
+        </div>
+      </ShellPage>
     );
   }
 
   const stats = moduleStats(mod, user.progress);
 
   return (
-    <>
-      <SiteHeader />
-      <main className="container" style={{ paddingTop: 28, paddingBottom: 60 }}>
+    <ShellPage user={user}>
+        <div className="stage-scroll">
         <div className="row" style={{ justifyContent: "space-between" }}>
           <div>
             <Link href="/hub" className="small muted">
@@ -109,7 +107,7 @@ export default async function ModulePage({
             />
           </div>
         )}
-      </main>
-    </>
+        </div>
+      </ShellPage>
   );
 }

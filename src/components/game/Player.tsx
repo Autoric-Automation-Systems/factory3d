@@ -48,6 +48,7 @@ export default function Player({
     x: 0,
     y: 0,
   });
+  const wheel = useRef(0);
 
   pausedRef.current = paused;
   interactRef.current = onInteract;
@@ -113,6 +114,13 @@ export default function Player({
       drag.current.active = false;
     };
 
+    const onWheel = (event: WheelEvent) => {
+      if (pausedRef.current) return;
+      event.preventDefault();
+      const step = event.deltaMode === 1 ? event.deltaY * 0.6 : event.deltaY * 0.012;
+      wheel.current = THREE.MathUtils.clamp(wheel.current - step, -1.6, 1.6);
+    };
+
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     document.addEventListener("mousemove", onMouseMove);
@@ -120,6 +128,7 @@ export default function Player({
     canvas.addEventListener("click", onClick);
     canvas.addEventListener("pointerdown", onPointerDown);
     canvas.addEventListener("pointermove", onPointerMove);
+    canvas.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("pointerup", onPointerUp);
 
     return () => {
@@ -130,6 +139,7 @@ export default function Player({
       canvas.removeEventListener("click", onClick);
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onPointerMove);
+      canvas.removeEventListener("wheel", onWheel);
       window.removeEventListener("pointerup", onPointerUp);
     };
   }, [gl]);
@@ -149,6 +159,13 @@ export default function Player({
       if (k["s"] || k["arrowdown"]) forward -= 1;
       if (k["a"] || k["arrowleft"]) strafe -= 1;
       if (k["d"] || k["arrowright"]) strafe += 1;
+
+      if (Math.abs(wheel.current) > 0.001) {
+        forward += wheel.current;
+        wheel.current = THREE.MathUtils.damp(wheel.current, 0, 5.5, delta);
+      } else {
+        wheel.current = 0;
+      }
 
       const joystick = moveRef.current;
       if (joystick && (Math.abs(joystick.x) > 0.08 || Math.abs(joystick.y) > 0.08)) {

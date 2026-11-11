@@ -1,5 +1,5 @@
 import Link from "next/link";
-import SiteHeader from "@/components/SiteHeader";
+import ShellPage from "@/components/shell/ShellPage";
 import { requireUser } from "@/lib/session";
 import { findStation, playableModules } from "@/content/catalog";
 import { moduleStats, stationPercent, TROPHY_LABEL } from "@/lib/progress";
@@ -14,9 +14,8 @@ export default async function FavoritosPage() {
     .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 
   return (
-    <>
-      <SiteHeader />
-      <main className="container" style={{ paddingTop: 28, paddingBottom: 60 }}>
+    <ShellPage user={user}>
+        <div className="stage-scroll">
         <Link href="/hub" className="small muted">
           ← Início
         </Link>
@@ -87,7 +86,7 @@ export default async function FavoritosPage() {
             );
           })}
         </div>
-      </main>
-    </>
+        </div>
+      </ShellPage>
   );
 }

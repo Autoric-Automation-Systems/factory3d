@@ -12,6 +12,7 @@ import type { PlayerPos } from "./GameCanvas";
 import Joystick from "./Joystick";
 import Minimap from "./Minimap";
 import StationPanel from "./StationPanel";
+import ControlsHints from "./ControlsHints";
 
 const GameCanvas = dynamic(() => import("./GameCanvas"), {
   ssr: false,
@@ -41,7 +42,6 @@ export default function GameShell({
   const [openId, setOpenId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [hintVisible, setHintVisible] = useState(true);
 
   const moveRef = useRef<TouchVector>({ x: 0, y: 0 });
   const lookRef = useRef<TouchVector>({ x: 0, y: 0 });
@@ -70,11 +70,6 @@ export default function GameShell({
 
   useEffect(() => {
     setIsTouch(window.matchMedia("(pointer: coarse)").matches);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setHintVisible(false), 14000);
-    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -127,7 +122,6 @@ export default function GameShell({
   const openStationById = useCallback(
     (station: Station) => {
       setOpenId(station.id);
-      setHintVisible(false);
       setProgress((prev) => {
         const current = prev[station.id] ?? emptyStationProgress();
         if (current.visited) return prev;
@@ -278,22 +272,13 @@ export default function GameShell({
               <span className="small muted">{percents[nearby.id] ?? 0}%</span>
             </div>
           )}
-
-          {!nearby && hintVisible && !paused && (
-            <div className="prompt" style={{ cursor: "default", borderColor: "var(--line)" }}>
-              <span className="small muted">
-                {isTouch
-                  ? "Arraste para olhar · joystick para andar · toque na estação para examinar"
-                  : "Clique para capturar o mouse · WASD para andar · E para examinar · Esc para o menu"}
-              </span>
-            </div>
-          )}
         </div>
       </div>
 
       <Minimap stations={stations} percents={percents} posRef={posRef} />
 
       {isTouch && <Joystick moveRef={moveRef} />}
+      <ControlsHints isTouch={isTouch} />
 
       {openStation && (
         <StationPanel
