@@ -1,35 +1,38 @@
 # Marca da Fábrica 3D
 
-Tudo em `public/` é servido na raiz. A marca tem duas fontes:
+Tudo em `public/` é servido na raiz. Os arquivos ficam separados por tipo:
+`brand/` (marca), `icons/` (favicons e PWA) e `maps/` (imagens dos cards de mapa).
 
 ```
 public/
-├── logo.png            símbolo (fonte)
-├── logo_name.png       símbolo + nome, empilhados (fonte)
-├── hero.jpg            imagem da home
-├── favicon.ico         favicon multi-tamanho
-├── favicon-16x16.png
-├── favicon-32x32.png
-├── apple-touch-icon.png
-├── android-chrome-192x192.png
-├── android-chrome-512x512.png
-└── brand/
-    ├── logo/logo.png            símbolo quadrado, com respiro
-    └── logo-name/logo-name.png  lockup horizontal (símbolo + palavra)
+├── brand/
+│   ├── logo.png            símbolo (fonte)
+│   ├── logo-name.png       lockup empilhado, símbolo sobre a palavra (fonte)
+│   ├── logo-name-wide.png  lockup horizontal, gerado — usado no header, trilho e footer
+│   ├── logo-icon.png       ícone quadrado com respiro, gerado — usado no footer
+│   └── hero.jpg            imagem de fundo da home
+├── icons/
+│   ├── favicon.ico
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
+│   ├── apple-touch-icon.png
+│   ├── android-192.png
+│   └── android-512.png
+├── maps/                   fotos dos cards de mapa (ver CREDITS.md)
+└── site.webmanifest
 ```
 
-`src/lib/brand.ts` procura nesta ordem: `brand/*.svg`, `brand/*.png` e, por
-último, `logo.png` / `logo_name.png`. Se nada existir, a interface cai no texto
-`F3` / `Fábrica 3D` — nada quebra.
+`src/lib/brand.ts` só devolve caminhos que existem de fato (checagem em disco), então
+nada quebra se um arquivo for removido: a interface cai no texto `Fábrica 3D`.
 
 ## Por que existe o lockup horizontal
 
-`logo_name.png` é quadrado, com o símbolo em cima e a palavra embaixo. No
-cabeçalho e no trilho lateral o espaço é horizontal, então `brand/logo-name`
-guarda uma versão lado a lado gerada a partir das mesmas peças (símbolo de
-`logo.png` + faixa da palavra recortada de `logo_name.png`).
+`logo-name.png` é quadrado, com o símbolo em cima e a palavra embaixo. No header, no
+trilho e no footer o espaço é horizontal, então `brand/logo-name-wide.png` guarda uma
+versão lado a lado gerada a partir das mesmas peças. Como esse lockup já contém o
+símbolo, o header não deve renderizar `logo.png` junto — seria um símbolo duplicado.
 
-Para trocar a marca, substitua `logo.png` e `logo_name.png` e regere o lockup:
+Para trocar a marca, substitua `logo.png` e `logo-name.png` e regere os derivados:
 
 ```bash
 python3 tools/make-brand.py
@@ -38,14 +41,11 @@ python3 tools/make-brand.py
 ## Ícones
 
 Os `<link rel="icon">`, `apple-touch-icon` e o manifesto são declarados em
-`src/app/layout.tsx` (`metadata.icons` e `metadata.manifest`). O
-`public/site.webmanifest` aponta para os PNGs acima. Ao trocar o símbolo,
-regerencie também `favicon.ico`, `favicon-16`, `favicon-32`, `apple-touch-icon`
-e `android-chrome-*` a partir de `logo.png`.
+`src/app/layout.tsx` (`metadata.icons` e `metadata.manifest`). O manifesto aponta para
+`/icons/android-*.png`. Ao trocar o símbolo, regerencie também os arquivos de `icons/`.
 
 ## Preferências
 
-- PNG com fundo transparente; 400 × 400 é suficiente para os dois arquivos.
-- Deixe ~6% de respiro nas bordas do símbolo, porque ele é aplicado em um
-  quadrado de 28–34 px com canto arredondado.
-
+- PNG com fundo transparente; 400 × 400 é suficiente para `logo.png` e `logo-name.png`.
+- Deixe ~6% de respiro nas bordas do símbolo: ele é aplicado em quadrados de 28–40 px
+  com canto arredondado.

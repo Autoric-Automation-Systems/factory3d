@@ -4,7 +4,6 @@ import { loginDemo, loginWithGoogle } from "@/app/actions";
 import { currentUser } from "@/lib/session";
 import { googleEnabled } from "@/auth";
 import { brandAssets } from "@/lib/brand";
-import BrandMark from "@/components/brand/BrandMark";
 import BrandName from "@/components/brand/BrandName";
 
 export const dynamic = "force-dynamic";
@@ -27,8 +26,7 @@ export default async function EntrarPage() {
         className="card"
         style={{ width: "100%", maxWidth: 430, boxShadow: "var(--shadow)" }}
       >
-        <Link href="/" className="brand" style={{ marginBottom: 22 }}>
-          <BrandMark src={brand.logo} />
+        <Link href="/" className="brand" style={{ marginBottom: 22 }} aria-label="Fábrica 3D">
           <BrandName src={brand.logoName} />
         </Link>
 

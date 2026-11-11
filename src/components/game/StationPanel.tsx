@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { DisciplineId, Station } from "@/lib/types";
 import { DISCIPLINES } from "@/lib/types";
 
@@ -47,6 +47,20 @@ export default function StationPanel({
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [checked, setChecked] = useState(false);
   const [discipline, setDiscipline] = useState<DisciplineId | null>(null);
+  const [readScale, setReadScale] = useState(1);
+
+  useEffect(() => {
+    const stored = Number(window.localStorage.getItem("f3d-read-scale"));
+    if (stored >= 1 && stored <= 1.5) setReadScale(stored);
+  }, []);
+
+  const changeReadScale = (step: number) => {
+    setReadScale((current) => {
+      const next = Math.min(1.5, Math.max(1, Math.round((current + step) * 100) / 100));
+      window.localStorage.setItem("f3d-read-scale", String(next));
+      return next;
+    });
+  };
 
   const related = discipline
     ? stations.filter((item) => item.disciplines.includes(discipline))
@@ -61,7 +75,10 @@ export default function StationPanel({
 
   return (
     <div className="sheet" role="dialog" aria-modal="true" aria-label={station.name}>
-      <div className="sheet-inner">
+      <div
+        className="sheet-inner"
+        style={{ "--read-scale": readScale } as React.CSSProperties}
+      >
         <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <div className="small muted">{moduleName}</div>
@@ -71,6 +88,26 @@ export default function StationPanel({
             </p>
           </div>
           <div className="row" style={{ gap: 8 }}>
+            <div className="read-scale" title="Tamanho do texto">
+              <button
+                type="button"
+                className="icon-btn icon-btn-sm"
+                onClick={() => changeReadScale(-0.15)}
+                disabled={readScale <= 1}
+                aria-label="Diminuir texto"
+              >
+                A−
+              </button>
+              <button
+                type="button"
+                className="icon-btn icon-btn-sm"
+                onClick={() => changeReadScale(0.15)}
+                disabled={readScale >= 1.5}
+                aria-label="Aumentar texto"
+              >
+                A+
+              </button>
+            </div>
             <button
               className="icon-btn"
               onClick={onFavorite}
@@ -235,22 +272,34 @@ export default function StationPanel({
                 </li>
               ))}
             </ul>
+            <SeenRow
+              seen={isSeen("seguranca")}
+              onSeen={() => onSeen("seguranca")}
+              label="Leu as regras de segurança? Marque o visto."
+            />
           </div>
         )}
 
         {active === "falhas" && (
-          <div className="stack" style={{ gap: 10 }}>
-            {station.faults.map((fault) => (
-              <div className="block" key={fault.symptom} style={{ marginBottom: 0 }}>
-                <h4 style={{ color: "#ffd166" }}>{fault.symptom}</h4>
-                <div className="small" style={{ color: "#b9c7d2" }}>
-                  <strong>Causa provável:</strong> {fault.cause}
+          <div>
+            <div className="stack" style={{ gap: 10 }}>
+              {station.faults.map((fault) => (
+                <div className="block" key={fault.symptom} style={{ marginBottom: 0 }}>
+                  <h4 style={{ color: "#ffd166" }}>{fault.symptom}</h4>
+                  <div className="small" style={{ color: "#b9c7d2" }}>
+                    <strong>Causa provável:</strong> {fault.cause}
+                  </div>
+                  <div className="small" style={{ color: "#b9c7d2", marginTop: 4 }}>
+                    <strong>O que verificar:</strong> {fault.check}
+                  </div>
                 </div>
-                <div className="small" style={{ color: "#b9c7d2", marginTop: 4 }}>
-                  <strong>O que verificar:</strong> {fault.check}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <SeenRow
+              seen={isSeen("falhas")}
+              onSeen={() => onSeen("falhas")}
+              label="Revisou as falhas comuns? Marque o visto."
+            />
           </div>
         )}
 
@@ -267,18 +316,21 @@ export default function StationPanel({
                 </h4>
                 {question.options.map((option, optionIndex) => {
                   const selected = answers[question.id] === optionIndex;
-                  const state = !checked
-                    ? undefined
-                    : optionIndex === question.answer
+                  const state = checked
+                    ? optionIndex === question.answer
                       ? "correct"
                       : selected
                         ? "wrong"
-                        : undefined;
+                        : undefined
+                    : selected
+                      ? "selected"
+                      : undefined;
                   return (
                     <button
                       key={option}
                       className="quiz-option"
                       data-state={state}
+                      aria-pressed={selected}
                       onClick={() => {
                         if (checked) return;
                         setAnswers((prev) => ({ ...prev, [question.id]: optionIndex }));
@@ -362,6 +414,29 @@ export default function StationPanel({
           {station.specs.map((spec) => `${spec.label}: ${spec.value}`).join(" · ")}
         </p>
       </div>
+    </div>
+  );
+}
+
+function SeenRow({
+  seen,
+  onSeen,
+  label,
+}: {
+  seen: boolean;
+  onSeen: () => void;
+  label: string;
+}) {
+  return (
+    <div className="row" style={{ marginTop: 14, justifyContent: "space-between" }}>
+      <span className="small muted">{label}</span>
+      <button
+        className={`btn btn-sm ${seen ? "" : "btn-primary"}`}
+        onClick={onSeen}
+        disabled={seen}
+      >
+        {seen ? "Visto ✓" : "Marcar como visto"}
+      </button>
     </div>
   );
 }

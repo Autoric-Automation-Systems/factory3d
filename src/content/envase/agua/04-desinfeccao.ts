@@ -7,7 +7,7 @@ export const desinfeccao: Station = {
   disciplines: ["eletronica", "eletrica", "automacao", "qualidade", "seguranca"],
   minutes: 6,
   machine: "uv",
-  position: [-3, -7],
+  position: [-9, -7],
   specs: [
     { label: "Gerador de ozônio", value: "10 g/h a partir de oxigênio" },
     { label: "Reator UV", value: "254 nm, 4 lâmpadas de 55 W" },

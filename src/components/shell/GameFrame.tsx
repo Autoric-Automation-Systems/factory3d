@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { logout } from "@/app/actions";
 import BrandMark from "@/components/brand/BrandMark";
 import BrandName from "@/components/brand/BrandName";
+import HelpContent from "@/components/game/HelpContent";
 
 export type ShellMap = {
   slug: string;
@@ -15,6 +16,7 @@ export type ShellMap = {
   status: "playable" | "soon";
   stations: number;
   percent: number;
+  image: string | null;
 };
 
 const S = {
@@ -71,9 +73,29 @@ function IconExit() {
   );
 }
 
+function IconUser() {
+  return (
+    <svg width={20} height={20} {...S} aria-hidden="true">
+      <circle cx="12" cy="8.5" r="3.5" />
+      <path d="M5.5 19c.6-3.4 3.3-5.5 6.5-5.5s5.9 2.1 6.5 5.5" />
+    </svg>
+  );
+}
+
+function IconHelp() {
+  return (
+    <svg width={20} height={20} {...S} aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.3c-.8.4-1.2 1-1.2 1.9" />
+      <path d="M12 17.2h.01" />
+    </svg>
+  );
+}
+
 export default function GameFrame({
   brand,
   userName,
+  userImage,
   plan,
   percent,
   maps,
@@ -81,6 +103,7 @@ export default function GameFrame({
   defaultMapsOpen = false,
 }: {
   userName: string;
+  userImage?: string | null;
   plan: "free" | "pro";
   percent: number;
   maps: ShellMap[];
@@ -90,6 +113,7 @@ export default function GameFrame({
 }) {
   const [open, setOpen] = useState(false);
   const [mapsOpen, setMapsOpen] = useState(defaultMapsOpen);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
     setOpen(window.localStorage.getItem("f3d-rail") === "open");
@@ -98,7 +122,10 @@ export default function GameFrame({
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "m" || event.key === "M") setMapsOpen((v) => !v);
-      if (event.key === "Escape") setMapsOpen(false);
+      if (event.key === "Escape") {
+        setMapsOpen(false);
+        setHelpOpen(false);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -168,18 +195,41 @@ export default function GameFrame({
             <IconCard />
             <span className="rail-label">Planos</span>
           </Link>
+          <Link className="rail-item" href="/perfil" title="Perfil">
+            <IconUser />
+            <span className="rail-label">Perfil</span>
+          </Link>
+          <button
+            type="button"
+            className="rail-item"
+            data-active={helpOpen}
+            onClick={() => setHelpOpen(true)}
+            title="Ajuda"
+          >
+            <IconHelp />
+            <span className="rail-label">Ajuda</span>
+          </button>
         </nav>
 
         <div className="rail-foot">
-          <div className="rail-user">
-            <span className="rail-avatar">{initials || "F3"}</span>
+          <Link className="rail-user" href="/perfil" title="Perfil">
+            {userImage ? (
+              <img
+                className="rail-avatar rail-avatar-img"
+                src={userImage}
+                alt=""
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <span className="rail-avatar">{initials || "F3"}</span>
+            )}
             <span className="rail-label">
               <strong>{userName}</strong>
               <span className="small muted">
                 {plan === "free" ? "Plano gratuito" : "Plano individual"} · {percent}%
               </span>
             </span>
-          </div>
+          </Link>
           <form action={logout}>
             <button className="rail-item" type="submit" title="Sair">
               <IconExit />
@@ -223,8 +273,15 @@ export default function GameFrame({
                 {maps.map((item) =>
                   item.status === "playable" ? (
                     <Link key={item.slug} href={`/jogar/${item.slug}`} className="map-card">
-                      <div className="map-thumb" data-line={item.lineId}>
-                        <span className="map-thumb-mark">▶</span>
+                      <div
+                        className={`map-thumb${item.image ? " has-image" : ""}`}
+                        data-line={item.lineId}
+                      >
+                        {item.image ? (
+                          <img src={item.image} alt="" loading="lazy" />
+                        ) : (
+                          <span className="map-thumb-mark">▶</span>
+                        )}
                       </div>
                       <div className="map-card-body">
                         <span className="eyebrow">{item.line}</span>
@@ -243,7 +300,13 @@ export default function GameFrame({
                     </Link>
                   ) : (
                     <div key={item.slug} className="map-card is-locked">
-                      <div className="map-thumb" data-line={item.lineId} aria-hidden="true" />
+                      <div
+                        className={`map-thumb${item.image ? " has-image" : ""}`}
+                        data-line={item.lineId}
+                        aria-hidden="true"
+                      >
+                        {item.image && <img src={item.image} alt="" loading="lazy" />}
+                      </div>
                       <div className="map-card-body">
                         <span className="eyebrow">{item.line}</span>
                         <strong style={{ fontSize: 17 }}>{item.name}</strong>
@@ -259,6 +322,29 @@ export default function GameFrame({
                   ),
                 )}
               </div>
+            </section>
+          </div>
+        )}
+
+        {helpOpen && (
+          <div className="drawer-layer" onClick={() => setHelpOpen(false)}>
+            <section
+              className="map-drawer"
+              aria-label="Ajuda"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <header className="map-drawer-head">
+                <div className="eyebrow">Fábrica 3D</div>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setHelpOpen(false)}
+                  aria-label="Fechar"
+                >
+                  ✕
+                </button>
+              </header>
+              <HelpContent />
             </section>
           </div>
         )}

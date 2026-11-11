@@ -311,6 +311,73 @@ function PalletizerMachine() {
   );
 }
 
+function ShrinkMachine() {
+  const fardo = useRef<THREE.Group>(null);
+  useFrame(({ clock }) => {
+    if (fardo.current) {
+      const t = (clock.elapsedTime * 0.35) % 1;
+      fardo.current.position.z = -1.2 + t * 2.4;
+      fardo.current.position.y = 1.15 + Math.sin(t * Math.PI) * 0.06;
+    }
+  });
+  return (
+    <group>
+      <Skid />
+      {/* formador de fardos */}
+      <Box p={[-1.4, 1.05, 0]} s={[1.5, 0.14, 1.0]} c={DARK} metal={0.3} rough={0.7} />
+      <Box p={[-1.9, 1.6, 0.45]} s={[0.08, 1.1, 0.08]} c={STEEL} />
+      <Box p={[-1.9, 1.6, -0.45]} s={[0.08, 1.1, 0.08]} c={STEEL} />
+      <Box p={[-0.9, 1.6, 0.45]} s={[0.08, 1.1, 0.08]} c={STEEL} />
+      <Box p={[-0.9, 1.6, -0.45]} s={[0.08, 1.1, 0.08]} c={STEEL} />
+      {/* túnel de calor */}
+      <Box p={[0.9, 1.5, 0]} s={[2.2, 1.9, 1.5]} c={STEEL} metal={0.45} rough={0.45} />
+      <Box p={[0.9, 1.5, 0.78]} s={[1.5, 1.1, 0.04]} c={"#1b252c"} metal={0.2} rough={0.6} />
+      <Box p={[0.9, 1.5, -0.78]} s={[1.5, 1.1, 0.04]} c={"#1b252c"} metal={0.2} rough={0.6} />
+      <Box p={[0.9, 2.5, 0]} s={[2.3, 0.14, 1.6]} c={DARK} />
+      <Box p={[1.9, 1.6, 0.55]} s={[0.3, 0.4, 0.3]} c={DARK} metal={0.4} rough={0.5} e={"#ff7b3d"} />
+      {/* fardo saindo */}
+      <group ref={fardo} position={[1.6, 1.15, 0]}>
+        <Box p={[0, 0, 0]} s={[0.75, 0.55, 0.85]} c={"#cfe6f2"} metal={0.05} rough={0.35} />
+        <Box p={[0, 0.3, 0]} s={[0.79, 0.04, 0.89]} c={"#9fd0e6"} metal={0.1} rough={0.3} />
+      </group>
+    </group>
+  );
+}
+
+function WrapperMachine() {
+  const ring = useRef<THREE.Group>(null);
+  const carriage = useRef<THREE.Group>(null);
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime;
+    if (ring.current) ring.current.rotation.y = t * 1.1;
+    if (carriage.current) carriage.current.position.y = 1.35 + Math.sin(t * 0.9) * 0.75;
+  });
+  return (
+    <group>
+      <Skid />
+      {/* plataforma e palete */}
+      <Cyl p={[0, 0.22, 0]} r={1.15} h={0.22} c={DARK} metal={0.3} rough={0.7} />
+      <Box p={[0, 0.36, 0]} s={[1.5, 0.14, 1.2]} c={"#8b6b45"} metal={0.05} rough={0.95} />
+      <Box p={[0, 0.78, 0]} s={[1.25, 0.7, 1.0]} c={"#cfe6f2"} metal={0.05} rough={0.4} />
+      <Box p={[0, 1.42, 0]} s={[1.25, 0.6, 1.0]} c={"#cfe6f2"} metal={0.05} rough={0.4} />
+      {/* anel rotativo com carro de filme */}
+      <group ref={ring} position={[0, 0.2, 0]}>
+        <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.55, 0.07, 8, 32]} />
+          <meshStandardMaterial color={METAL} metalness={0.6} roughness={0.35} />
+        </mesh>
+        <Box p={[1.55, 0.12, 0]} s={[0.28, 0.28, 0.28]} c={YELLOW} metal={0.4} rough={0.4} />
+        <group ref={carriage} position={[1.55, 1.35, 0]}>
+          <Box p={[0, 0, 0]} s={[0.22, 1.5, 0.22]} c={STEEL} />
+          <Cyl p={[0, 0, 0.22]} r={0.18} h={0.5} c={"#e8f4fa"} metal={0.1} rough={0.2} axis="x" />
+        </group>
+      </group>
+      <Box p={[-1.5, 1.1, 0]} s={[0.5, 1.6, 0.5]} c={BLUE} metal={0.3} rough={0.6} />
+      <Box p={[-1.5, 1.95, 0]} s={[0.36, 0.3, 0.36]} c={DARK} />
+    </group>
+  );
+}
+
 export function Machine({ kind }: { kind: MachineKind }) {
   const content = useMemo(() => {
     switch (kind) {
@@ -328,8 +395,12 @@ export function Machine({ kind }: { kind: MachineKind }) {
         return <CapperMachine />;
       case "labeler":
         return <LabelerMachine />;
+      case "shrink":
+        return <ShrinkMachine />;
       case "palletizer":
         return <PalletizerMachine />;
+      case "wrapper":
+        return <WrapperMachine />;
       default:
         return null;
     }

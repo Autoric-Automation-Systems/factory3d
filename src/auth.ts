@@ -48,20 +48,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (!token.uid && user?.email) {
+      // `user` só existe no login: o banco recebe nome e foto uma única vez por sessão.
+      if (user?.email) {
         const record = await upsertUser({
           email: user.email,
           name: user.name,
           image: user.image,
-          provider: "oauth",
+          provider: user.email === DEMO_EMAIL ? "demo" : "oauth",
         });
         token.uid = record.id;
+        token.name = record.name;
+        token.picture = record.image;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token.uid) {
+      if (session.user) {
         session.user.id = token.uid as string;
+        session.user.name = (token.name as string) ?? session.user.name;
+        session.user.image = (token.picture as string | null) ?? null;
       }
       return session;
     },

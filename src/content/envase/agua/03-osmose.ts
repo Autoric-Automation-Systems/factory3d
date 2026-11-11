@@ -7,7 +7,7 @@ export const osmose: Station = {
   disciplines: ["hidraulica", "eletrica", "automacao", "qualidade"],
   minutes: 7,
   machine: "osmosis",
-  position: [-10, -7],
+  position: [-15, -7],
   specs: [
     { label: "Membranas", value: "6 × 4040 poliamida composta" },
     { label: "Pressão de operação", value: "10–14 bar" },

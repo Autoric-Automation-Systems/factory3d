@@ -7,7 +7,7 @@ export const captacao: Station = {
   disciplines: ["hidraulica", "eletrica", "operacao", "seguranca"],
   minutes: 5,
   machine: "well",
-  position: [-24, -7],
+  position: [-27, -7],
   specs: [
     { label: "Vazão de projeto", value: "8 m³/h" },
     { label: "Bomba submersível", value: "4 cv, 380 V trifásica" },

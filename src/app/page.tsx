@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import { lines, totalStations } from "@/content/catalog";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +13,7 @@ export default function LandingPage() {
 
       <section className="hero">
         <Image
-          src="/hero.jpg"
+          src="/brand/hero.jpg"
           alt=""
           fill
           priority
@@ -126,8 +127,8 @@ export default function LandingPage() {
             ))}
           </div>
           <p className="small" style={{ marginTop: 16 }}>
-            A primeira linha liberada é <strong>Envase · Água mineral</strong>, com 8
-            estações. As demais entram em expansão.
+            A primeira linha liberada é <strong>Envase · Água mineral</strong>, com{" "}
+            {totalStations} estações. As demais entram em expansão.
           </p>
         </div>
       </section>
@@ -159,15 +160,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="footer">
-        <div className="container">
-          <p style={{ margin: 0 }}>
-            Fábrica 3D · ambiente de aprendizagem. A simulação apoia o treinamento e
-            não substitui a capacitação prática nem autoriza operação real de
-            equipamentos.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

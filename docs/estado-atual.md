@@ -7,11 +7,11 @@ que está implementado no código. Atualizar a cada entrega.
 
 | Área | Estado | Observação |
 | --- | --- | --- |
-| Mundo 3D navegável | pronto | Galpão 66×26 m, 8 máquinas procedurais, esteira animada, etiquetas 3D |
+| Mundo 3D navegável | pronto | Galpão 66×26 m, 10 máquinas procedurais, esteira animada, etiquetas 3D |
 | Primeira pessoa | pronto | Desktop (mouse + WASD) e celular (joystick + arrastar) |
 | Tour interativo | pronto | Painel por estação com 4 blocos de conteúdo, segurança e falhas |
-| Visto por item | pronto | Botão explícito por bloco, com marcação no painel e no mundo |
-| Progresso por usuário | pronto | 10% abrir + 70% blocos + 20% quiz |
+| Visto por item | pronto | Botão explícito por bloco e também em Segurança e Falhas comuns |
+| Progresso por usuário | pronto | 10% abrir + 70% itens lidos (blocos + segurança + falhas) + 20% quiz |
 | Troféus | pronto | Bronze/Prata/Ouro por módulo + percentual geral |
 | Favoritos | pronto | Marcação na estação e página dedicada |
 | Quiz | pronto | 3 questões por estação, correção imediata, melhor nota salva |
@@ -19,9 +19,13 @@ que está implementado no código. Atualizar a cada entrega.
 | Plano gratuito com anúncios | pronto | Blocos de anúncio no hub, módulo, landing e painel da estação |
 | Persistência | pronta | Postgres (Neon) em produção, JSON em local, selecionado por `DATABASE_URL` |
 | Vídeos | preparado | Campo `videoUrl` por estação; hoje a "animação" é a própria cena 3D |
-| Marca | pronto | Logo e nome em `public/brand` (derivados de `logo.png` / `logo_name.png`), usados no cabeçalho, no trilho e no login |
+| Marca | pronto | Lockup horizontal `brand/logo-name-wide.png` no cabeçalho/trilho/footer e `brand/logo-icon.png` no rodapé (gerados por `tools/make-brand.py`) |
+| Perfil | pronto | `/perfil` com foto da conta Google, nome, e-mail, plano e progresso; avatar no cabeçalho e no trilho |
 | Ícones | pronto | `favicon.ico`, PNGs 16/32/192/512, apple-touch e `site.webmanifest` declarados em `metadata` |
-| Home | pronto | Imagem `hero.jpg` no topo, atrás de véu de contraste |
+| Home | pronto | Imagem `brand/hero.jpg` no topo, atrás de véu de contraste |
+| Cards de mapa | pronto | Fotos em `public/maps` (créditos em `CREDITS.md`), resolvidas por `publicAsset()` |
+| Ajuda | pronto | Passos, legenda e atalhos na gaveta do trilho e no menu do jogo |
+| Leitura confortável | pronto | `A−`/`A+` no painel da estação, escala persistida no navegador |
 
 ## Decisões de projeto
 

@@ -7,7 +7,7 @@ export const filtracao: Station = {
   disciplines: ["hidraulica", "mecanica", "operacao", "qualidade"],
   minutes: 6,
   machine: "filters",
-  position: [-17, -7],
+  position: [-21, -7],
   specs: [
     { label: "Filtro de areia", value: "Ø 900 mm, leito 1,2 m, antracito + areia" },
     { label: "Filtro de carvão", value: "Carvão ativado granular vegetal" },

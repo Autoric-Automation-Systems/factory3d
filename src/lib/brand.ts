@@ -1,26 +1,19 @@
-import fs from "node:fs";
-import path from "node:path";
+import { publicAsset } from "./assets";
 
-export type BrandAssets = { logo: string | null; logoName: string | null };
-
-function exists(url: string) {
-  try {
-    return fs.existsSync(path.join(process.cwd(), "public", url.replace(/^\//, "")));
-  } catch {
-    return false;
-  }
-}
+export type BrandAssets = {
+  logo: string | null;
+  logoName: string | null;
+  logoIcon: string | null;
+};
 
 /** Só aponta para arquivos que existem, evitando 404 no console. */
 export function brandAssets(): BrandAssets {
-  const pick = (candidates: string[]) => candidates.find(exists) ?? null;
+  const pick = (candidates: string[]) =>
+    candidates.map(publicAsset).find((url) => url !== null) ?? null;
 
   return {
-    logo: pick(["/brand/logo/logo.svg", "/brand/logo/logo.png", "/logo.png"]),
-    logoName: pick([
-      "/brand/logo-name/logo-name.svg",
-      "/brand/logo-name/logo-name.png",
-      "/logo_name.png",
-    ]),
+    logo: pick(["/brand/logo.png"]),
+    logoName: pick(["/brand/logo-name-wide.png", "/brand/logo-name.png"]),
+    logoIcon: pick(["/brand/logo-icon.png", "/brand/logo.png"]),
   };
 }

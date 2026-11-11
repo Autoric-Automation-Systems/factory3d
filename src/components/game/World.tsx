@@ -292,7 +292,7 @@ export function World({
 
       <Label
         title="LINHA DE ENVASE"
-        subtitle="Água mineral · 8 estações · caminhe com WASD"
+        subtitle={`Água mineral · ${stations.length} estações · caminhe com WASD`}
         accent="#ffc53d"
         scale={2}
         position={[0, 5.4, 11]}

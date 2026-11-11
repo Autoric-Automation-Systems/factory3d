@@ -7,7 +7,7 @@ export const rotulagem: Station = {
   disciplines: ["mecanica", "automacao", "eletronica", "qualidade"],
   minutes: 6,
   machine: "labeler",
-  position: [18, -7],
+  position: [9, -7],
   specs: [
     { label: "Rotuladora", value: "Rotativa com cola fria, 8.000 garrafas/h" },
     { label: "Codificador", value: "Jato de tinta contínuo (CIJ)" },

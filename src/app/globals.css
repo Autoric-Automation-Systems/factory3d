@@ -669,6 +669,41 @@ input[type="email"] {
   background: var(--bg-2);
   border-left: 1px solid var(--line);
   padding: 22px 22px 40px;
+  font-size: calc(14px * var(--read-scale, 1));
+}
+
+.sheet-inner .small,
+.sheet-inner .block p,
+.sheet-inner .block li,
+.sheet-inner .block ol,
+.sheet-inner .block ul {
+  font-size: calc(13px * var(--read-scale, 1));
+}
+
+.sheet-inner .block h4 {
+  font-size: calc(15px * var(--read-scale, 1));
+}
+
+.sheet-inner .tab,
+.sheet-inner .quiz-option {
+  font-size: calc(13.5px * var(--read-scale, 1));
+}
+
+.read-scale {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.icon-btn-sm {
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 @media (max-width: 720px) {
@@ -771,6 +806,12 @@ input[type="email"] {
   border-color: #3a4d5a;
 }
 
+.quiz-option[data-state="selected"] {
+  border-color: rgba(255, 197, 61, 0.75);
+  background: rgba(255, 197, 61, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 197, 61, 0.35);
+}
+
 .quiz-option[data-state="correct"] {
   border-color: rgba(53, 208, 127, 0.6);
   background: rgba(53, 208, 127, 0.1);
@@ -825,10 +866,62 @@ input[type="email"] {
   font-size: 13px;
 }
 
+.footer-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 560px;
+}
+
+.footer-icon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.footer .brand-name {
+  height: 22px;
+  width: auto;
+  max-width: 150px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 18px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.footer-links a {
+  color: #8fa3b0;
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
 .pill-list {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
 }
 
 .loading {
@@ -1011,6 +1104,26 @@ input[type="email"] {
   overflow: hidden;
 }
 
+.perfil-avatar {
+  flex: 0 0 82px;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: #1b2833;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: #cddbe6;
+}
+
+.rail-avatar-img {
+  object-fit: cover;
+  padding: 0;
+}
+
 .rail-avatar {
   flex: 0 0 34px;
   width: 34px;
@@ -1181,8 +1294,8 @@ a.map-card:hover {
 }
 
 .map-thumb {
-  flex: 0 0 86px;
-  height: 86px;
+  flex: 0 0 104px;
+  height: 92px;
   border-radius: 10px;
   position: relative;
   overflow: hidden;
@@ -1190,6 +1303,18 @@ a.map-card:hover {
     linear-gradient(135deg, rgba(86, 168, 255, 0.25), rgba(53, 208, 127, 0.12)),
     #101a22;
   border: 1px solid var(--line);
+}
+
+.map-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.9);
+}
+
+.map-thumb.has-image::after {
+  opacity: 0.18;
 }
 
 .map-thumb::after {
@@ -1420,10 +1545,33 @@ a.map-card:hover {
   border-radius: 10px;
 }
 
+.shell.is-open .rail-brand .brand-logo {
+  display: none;
+}
+
 .brand .brand-name {
-  height: 20px;
+  height: 22px;
   width: auto;
-  max-width: 108px;
+  max-width: 150px;
+}
+
+.header-user {
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  background: #1b2833;
+  color: #cddbe6;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .rail-label .brand-name {

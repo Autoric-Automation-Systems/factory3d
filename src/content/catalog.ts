@@ -6,7 +6,9 @@ import { desinfeccao } from "./envase/agua/04-desinfeccao";
 import { enchimento } from "./envase/agua/05-enchimento";
 import { capsulagem } from "./envase/agua/06-capsulagem";
 import { rotulagem } from "./envase/agua/07-rotulagem";
-import { paletizacao } from "./envase/agua/08-paletizacao";
+import { empacotamento } from "./envase/agua/08-empacotamento";
+import { paletizacao } from "./envase/agua/09-paletizacao";
+import { envolvimento } from "./envase/agua/10-envolvimento";
 
 export const agua: LearningModule = {
   id: "envase-agua",
@@ -14,7 +16,7 @@ export const agua: LearningModule = {
   name: "Água mineral",
   lineId: "envase",
   summary:
-    "Da captação no poço artesiano à paletização: oito estações que explicam o ciclo completo de uma linha de envase de água.",
+    "Da captação no poço artesiano ao palete envolvido: dez estações que explicam o ciclo completo de uma linha de envase de água.",
   status: "playable",
   goals: [
     "Explicar o fluxo do processo do poço à expedição",
@@ -30,7 +32,9 @@ export const agua: LearningModule = {
     enchimento,
     capsulagem,
     rotulagem,
+    empacotamento,
     paletizacao,
+    envolvimento,
   ],
 };
 

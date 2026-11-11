@@ -4,7 +4,6 @@ import { currentUser } from "@/lib/session";
 import { overallPercent } from "@/lib/progress";
 import { playableModules } from "@/content/catalog";
 import { brandAssets } from "@/lib/brand";
-import BrandMark from "./brand/BrandMark";
 import BrandName from "./brand/BrandName";
 
 const FIRST_MODULE = playableModules[0]?.slug ?? "agua";
@@ -17,8 +16,7 @@ export default async function SiteHeader() {
   return (
     <header className="site-header">
       <div className="container inner">
-        <Link href={user ? "/hub" : "/"} className="brand">
-          <BrandMark src={brand.logo} />
+        <Link href={user ? "/hub" : "/"} className="brand" aria-label="Fábrica 3D">
           <BrandName src={brand.logoName} />
         </Link>
 
@@ -33,6 +31,15 @@ export default async function SiteHeader() {
               <span className="badge badge-accent" title="Progresso geral">
                 {percent}%
               </span>
+              <Link href="/perfil" className="header-user" title={`Perfil de ${user.name}`}>
+                {user.image ? (
+                  <img src={user.image} alt="" className="header-avatar" referrerPolicy="no-referrer" />
+                ) : (
+                  <span className="header-avatar header-avatar-fallback">
+                    {user.name.slice(0, 2).toUpperCase()}
+                  </span>
+                )}
+              </Link>
               <form action={logout}>
                 <button className="btn btn-ghost btn-sm" type="submit">
                   Sair

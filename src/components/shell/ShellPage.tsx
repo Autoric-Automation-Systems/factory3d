@@ -4,6 +4,7 @@ import { moduleStats, overallPercent } from "@/lib/progress";
 import { playableModules } from "@/content/catalog";
 import type { UserRecord } from "@/lib/store";
 import { brandAssets } from "@/lib/brand";
+import { publicAsset } from "@/lib/assets";
 
 export function shellMaps(user: UserRecord): ShellMap[] {
   return lines.flatMap((line) =>
@@ -16,6 +17,7 @@ export function shellMaps(user: UserRecord): ShellMap[] {
       status: mod.status,
       stations: mod.stations.length,
       percent: mod.stations.length ? moduleStats(mod, user.progress).percent : 0,
+      image: publicAsset(`/maps/${mod.slug}.jpg`),
     })),
   );
 }
@@ -31,6 +33,7 @@ export default function ShellPage({
     <GameFrame
       brand={brandAssets()}
       userName={user.name}
+      userImage={user.image}
       plan={user.plan}
       percent={overallPercent(playableModules, user.progress)}
       maps={shellMaps(user)}

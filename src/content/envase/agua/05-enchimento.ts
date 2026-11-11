@@ -7,7 +7,7 @@ export const enchimento: Station = {
   disciplines: ["mecanica", "pneumatica", "automacao", "operacao", "qualidade"],
   minutes: 8,
   machine: "filler",
-  position: [4, -7],
+  position: [-3, -7],
   specs: [
     { label: "Tipo", value: "Rotativa isobárica, 24 bicos" },
     { label: "Capacidade", value: "12.000 garrafas/h" },

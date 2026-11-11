@@ -13,6 +13,7 @@ import Joystick from "./Joystick";
 import Minimap from "./Minimap";
 import StationPanel from "./StationPanel";
 import ControlsHints from "./ControlsHints";
+import HelpContent from "./HelpContent";
 
 const GameCanvas = dynamic(() => import("./GameCanvas"), {
   ssr: false,
@@ -41,6 +42,7 @@ export default function GameShell({
   const [nearbyId, setNearbyId] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const moveRef = useRef<TouchVector>({ x: 0, y: 0 });
@@ -146,7 +148,8 @@ export default function GameShell({
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        if (openId) setOpenId(null);
+        if (helpOpen) setHelpOpen(false);
+        else if (openId) setOpenId(null);
         else setMenuOpen((value) => !value);
       }
       if (event.key === "Tab") {
@@ -156,7 +159,7 @@ export default function GameShell({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [openId]);
+  }, [openId, helpOpen]);
 
   const markSeen = (station: Station, blockId: string) => {
     setProgress((prev) => {
@@ -368,6 +371,9 @@ export default function GameShell({
               <Link className="btn btn-sm" href="/conquistas">
                 Conquistas
               </Link>
+              <button className="btn btn-sm" type="button" onClick={() => setHelpOpen(true)}>
+                Ajuda
+              </button>
               {plan === "free" && (
                 <Link className="btn btn-sm btn-primary" href="/precos">
                   Remover anúncios
@@ -379,6 +385,19 @@ export default function GameShell({
               Controles: {isTouch ? "joystick para andar, arraste para olhar" : "WASD ou setas para andar, mouse para olhar, Shift para correr"}, Esc abre
               e fecha este menu.
             </p>
+          </div>
+        </div>
+      )}
+
+      {helpOpen && (
+        <div className="sheet" role="dialog" aria-modal="true" aria-label="Ajuda">
+          <div className="sheet-inner">
+            <div className="row" style={{ justifyContent: "flex-end" }}>
+              <button className="icon-btn" onClick={() => setHelpOpen(false)} aria-label="Fechar">
+                ✕
+              </button>
+            </div>
+            <HelpContent isTouch={isTouch} />
           </div>
         </div>
       )}

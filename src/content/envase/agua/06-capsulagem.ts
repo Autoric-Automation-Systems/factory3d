@@ -7,7 +7,7 @@ export const capsulagem: Station = {
   disciplines: ["mecanica", "pneumatica", "eletrica", "qualidade"],
   minutes: 6,
   machine: "capper",
-  position: [11, -7],
+  position: [3, -7],
   specs: [
     { label: "Tipo", value: "Rosqueadeira rotativa com 6 cabeçotes" },
     { label: "Torque de aplicação", value: "1,2–1,8 N·m" },

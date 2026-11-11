@@ -12,14 +12,22 @@ export const TROPHY_LABEL: Record<Trophy, string> = {
 
 export type ProgressMap = Record<string, StationProgress>;
 
+/** Abas de leitura que também contam visto, além dos blocos de conteúdo. */
+export const REVIEW_TABS = ["seguranca", "falhas"] as const;
+
+export function stationChecklist(station: Station): string[] {
+  return [...station.blocks.map((block) => block.id), ...REVIEW_TABS];
+}
+
 /**
- * 10% por abrir a estação, até 70% pelos blocos de conteúdo e 20% pelo quiz.
+ * 10% por abrir a estação, até 70% pelos itens lidos (blocos + segurança + falhas)
+ * e 20% pelo quiz.
  */
 export function stationPercent(station: Station, progress?: StationProgress): number {
   if (!progress?.visited) return 0;
-  const total = station.blocks.length;
-  const seen = station.blocks.filter((b) => progress.seenBlocks.includes(b.id)).length;
-  const blockRatio = total === 0 ? 1 : seen / total;
+  const items = stationChecklist(station);
+  const seen = items.filter((id) => progress.seenBlocks.includes(id)).length;
+  const blockRatio = items.length === 0 ? 1 : seen / items.length;
   return Math.round(10 + 70 * blockRatio + (progress.quizPassed ? 20 : 0));
 }
 

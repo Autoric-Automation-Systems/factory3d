@@ -67,17 +67,17 @@ Registradas aqui para não se perderem entre sessões.
 | Vagas | 1 mapa = 1 vaga, com rotatividade por aluno |
 | Modo prática | Adiado |
 
-## Pedido das 19:59 — o que ficou pendente
+## Pedido das 19:59 — resolvido na sessão das 22:00
 
 Verificado no código atual, não apenas no transcript.
 
 | Pedido | Estado | Evidência |
 | --- | --- | --- |
-| Controle de tamanho de fonte no quadro de leitura | **falta** | `StationPanel.tsx` só usa `fontSize` fixo no título (linha 68); não há controle de zoom |
-| Separar Empacotamento, Paletização e Envolvimento do Palete | **falta** | `src/content/envase/agua/08-paletizacao.ts` cobre as três etapas como uma estação só, "Embalagem e paletização" |
-| Botão de "visto" nos cards de Segurança e Falhas comuns | **falta** | o bloco `<div className="block">` com botão só existe para os blocos de conteúdo; as abas `seguranca` e `falhas` renderizam listas sem botão |
-| Respostas do quiz não estão sendo clicadas | **não confirmado** | `quiz-option` tem `onClick` e CSS de estado; a suspeita é captura de evento pela cena 3D por cima do painel, não a lógica |
-| Usar as imagens enviadas em `/public` | **feito em 11/11 21:55** | ver "Sessão de 11/11 (noite)" abaixo |
+| Controle de tamanho de fonte no quadro de leitura | **feito** | `StationPanel` tem `A−`/`A+` (100–150%, persistido em `localStorage` como `f3d-read-scale`); o CSS escala via `--read-scale` em `.sheet-inner` |
+| Separar Empacotamento, Paletização e Envolvimento do Palete | **feito** | `08-empacotamento.ts`, `09-paletizacao.ts` e `10-envolvimento.ts`, com máquinas `shrink`, `palletizer` e `wrapper`; a linha passou de 8 para 10 estações |
+| Botão de "visto" nos cards de Segurança e Falhas comuns | **feito** | `SeenRow` nas abas `seguranca` e `falhas`; `REVIEW_TABS` em `progress.ts` entra no denominador do percentual |
+| Respostas do quiz não estão sendo clicadas | **feito** | o clique já registrava a resposta (contador "x/3 respondidas"), mas não havia retorno visual antes da correção: novo `data-state="selected"` no `.quiz-option` |
+| Usar as imagens de `/public` nos cards de mapa | **feito** | 13 fotos em `public/maps/`, `shellMaps()` resolve `/maps/<slug>.jpg` por `publicAsset()` |
 
 ## Sessão de 11/11 (noite) — marca, home, placa e ícones
 
@@ -95,18 +95,40 @@ quadrado de 400 px. No cabeçalho e no trilho o espaço é horizontal, então o
 lockup é derivado — não recriado: símbolo de `logo.png` + faixa do nome recortada
 de `logo_name.png`. Regerar com `python3 tools/make-brand.py`.
 
+## Sessão de 11/11 (22:00) — revisão de marca, perfil e conteúdo
+
+Rodada pedida depois de usar o app em produção.
+
+| Pedido | O que estava errado | Correção |
+| --- | --- | --- |
+| Header só com o nome | `SiteHeader` e `/entrar` renderizavam `BrandMark` (símbolo) junto de `BrandName`, repetindo o símbolo — o lockup horizontal já contém os dois | header, trilho, `/entrar` e footer usam só `logo-name-wide.png`; no trilho recolhido o CSS esconde o lockup e mostra o símbolo |
+| Foto do perfil não aparece | o callback `session` sobrescrevia a sessão e só copiava `id`, então `session.user.image` nunca existia; nenhuma tela renderizava avatar | `jwt` grava `token.picture` a partir do banco, `session` devolve `image`, header/trilho mostram a foto e `/perfil` exibe foto, nome, e-mail, plano e progresso |
+| Cards de mapa sem imagem | `ShellMap` não tinha campo de imagem | `image` + `publicAsset()`; os cards mostram a foto com recorte 16:9 e escurecimento leve |
+| Fonte no quadro de leitura | texto fixo em 13 px | `A−`/`A+` no cabeçalho do painel |
+| Estações do envase | uma estação "Embalagem e paletização" cobria três máquinas | três estações, três máquinas 3D (túnel shrink, pórtico e anel rotativo) e posições redistribuídas a cada 6 m |
+| Visto em Segurança e Falhas comuns | abas sem botão, então essas leituras não contavam | `SeenRow` nas duas abas |
+| Quiz "não clica" | a resposta era gravada, mas sem destaque visual | `data-state="selected"` |
+| Ajuda no menu | não existia | `HelpContent` reutilizado na gaveta do trilho e no menu do jogo, com passos, legenda e atalhos |
+| Rodapé com ícone | footer era uma linha de texto | `SiteFooter` com `logo-icon.png`, nome, links e aviso legal |
+
+Detalhe de arquitetura: `public/` passou a ser organizado por tipo (`brand/`,
+`icons/`, `maps/`); `src/lib/assets.ts` centraliza `publicAsset()`, que só devolve
+caminho existente, então remover um arquivo nunca gera 404 — a interface cai no
+texto. As fotos dos cards têm origem, licença e autor em `public/maps/CREDITS.md`
+e podem ser regeradas com `python3 tools/fetch-map-images.py`.
+
 ## O que está entregue
 
 Resumo; o detalhe fica em `estado-atual.md`.
 
-- Mundo 3D navegável: galpão 66×26 m, 8 máquinas procedurais animadas, esteira,
+- Mundo 3D navegável: galpão 66×26 m, 10 máquinas procedurais animadas, esteira,
   etiquetas 3D, minimapa.
 - Primeira pessoa em desktop (WASD + mouse + scroll para andar) e celular
   (joystick + arrastar).
 - Tour interativo com painel por estação, sete blocos, visto por item e quiz.
 - Progresso por usuário, troféus por módulo, favoritos e página de conquistas.
 - Hub no formato de lobby: palco vazio, trilho lateral expansível, gaveta de
-  mapas com percentual por mapa, HUD de teclas.
+  mapas com foto e percentual por mapa, ajuda, perfil e HUD de teclas.
 - Login Google (código pronto) e acesso de demonstração.
 - Persistência em Postgres em produção, JSON em local.
 
@@ -121,10 +143,8 @@ Resumo; o detalhe fica em `estado-atual.md`.
 
 ## Próximos passos
 
-1. Fechar o pacote das 19:59 (tabela acima), começando por fonte ajustável e
-   imagens de `/public`.
-2. `npm run build` e validação no navegador antes de cada push.
-3. Linha Automotivo: 4 módulos (combustão, elétrico, moto, bicicleta).
+1. `npm run build` e validação no navegador antes de cada push.
+2. Linha Automotivo: 4 módulos (combustão, elétrico, moto, bicicleta).
 4. Painel de turma: vagas rotativas, mapa por aluno, relatório.
 5. Checkout (Stripe ou Mercado Pago) para Individual e Escola.
 6. Vídeos curtos por estação, preenchendo `videoUrl`.

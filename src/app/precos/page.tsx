@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +11,7 @@ const plans = [
     period: "para sempre",
     highlight: false,
     features: [
-      "Módulo Água mineral completo (8 estações)",
+      "Módulo Água mineral completo (10 estações)",
       "Progresso e troféu do módulo",
       "Favoritos",
       "Anúncios discretos no painel e nas telas de apoio",
@@ -126,6 +127,7 @@ export default function PrecosPage() {
           histórico; o plano Escola adiciona painel da turma e relatório por competência.
         </p>
       </main>
+      <SiteFooter />
     </>
   );
 }

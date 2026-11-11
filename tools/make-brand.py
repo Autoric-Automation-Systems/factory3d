@@ -1,7 +1,12 @@
-"""Deriva os assets de marca a partir de public/logo.png e public/logo_name.png.
+"""Deriva os assets de marca a partir das fontes em public/brand/.
 
-O arquivo de origem logo_name.png é um lockup empilhado (símbolo sobre o nome);
-o cabeçalho e o trilho lateral precisam de um lockup horizontal, gerado aqui.
+Fontes (não geradas):
+  public/brand/logo.png       símbolo
+  public/brand/logo-name.png  lockup empilhado (símbolo sobre a palavra)
+
+Derivados:
+  public/brand/logo-name-wide.png  lockup horizontal usado no header e no trilho
+  public/brand/logo-icon.png       ícone quadrado com respiro, usado no footer
 
 Uso: python3 tools/make-brand.py   (requer Pillow)
 """
@@ -10,40 +15,39 @@ from pathlib import Path
 
 from PIL import Image
 
-PUBLIC = Path(__file__).resolve().parent.parent / "public"
+BRAND = Path(__file__).resolve().parent.parent / "public" / "brand"
 MARK_HEIGHT = 160
 WORD_HEIGHT = 62
 WORD_GAP = 34
-CANVAS = 256
-MARGIN = 0.06
-WORD_BAND_TOP = 308  # início da faixa com o nome dentro de logo_name.png
+ICON = 512
+ICON_MARGIN = 0.08
+WORD_BAND_TOP = 308  # início da faixa com o nome dentro de logo-name.png
 
 
 def load_mark() -> Image.Image:
-    mark = Image.open(PUBLIC / "logo.png").convert("RGBA")
+    mark = Image.open(BRAND / "logo.png").convert("RGBA")
     box = mark.split()[-1].getbbox()
     if box:
         mark = mark.crop(box)
     return mark
 
 
-def write_mark(mark: Image.Image) -> None:
+def write_icon(mark: Image.Image) -> None:
     side = max(mark.size)
-    pad = int(side * MARGIN)
+    pad = int(side * ICON_MARGIN)
     canvas = Image.new("RGBA", (side + 2 * pad, side + 2 * pad), (0, 0, 0, 0))
     canvas.paste(mark, ((canvas.width - mark.width) // 2, (canvas.height - mark.height) // 2))
-    out = PUBLIC / "brand/logo/logo.png"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    canvas.resize((CANVAS, CANVAS), Image.LANCZOS).save(out)
-    print("logo:", out)
+    out = BRAND / "logo-icon.png"
+    canvas.resize((ICON, ICON), Image.LANCZOS).save(out)
+    print("ícone:", out)
 
 
 def load_word() -> Image.Image:
-    lock = Image.open(PUBLIC / "logo_name.png").convert("RGBA")
+    lock = Image.open(BRAND / "logo-name.png").convert("RGBA")
     band = lock.crop((0, WORD_BAND_TOP, lock.width, lock.height))
     box = band.split()[-1].getbbox()
     if not box:
-        raise SystemExit("faixa do nome vazia em logo_name.png")
+        raise SystemExit("faixa do nome vazia em logo-name.png")
     return band.crop(box)
 
 
@@ -52,19 +56,16 @@ def write_lockup(mark: Image.Image, word: Image.Image) -> None:
     width = round(word.width * WORD_HEIGHT / word.height)
     label = word.resize((width, WORD_HEIGHT), Image.LANCZOS)
 
-    out = Image.new(
-        "RGBA", (MARK_HEIGHT + WORD_GAP + width, MARK_HEIGHT), (0, 0, 0, 0)
-    )
+    out = Image.new("RGBA", (MARK_HEIGHT + WORD_GAP + width, MARK_HEIGHT), (0, 0, 0, 0))
     out.paste(symbol, (0, 0), symbol)
     out.paste(label, (MARK_HEIGHT + WORD_GAP, (MARK_HEIGHT - WORD_HEIGHT) // 2), label)
 
-    path = PUBLIC / "brand/logo-name/logo-name.png"
-    path.parent.mkdir(parents=True, exist_ok=True)
+    path = BRAND / "logo-name-wide.png"
     out.save(path)
     print("lockup:", path, out.size)
 
 
 if __name__ == "__main__":
     mark = load_mark()
-    write_mark(mark)
+    write_icon(mark)
     write_lockup(mark, load_word())

@@ -33,7 +33,9 @@ export type MachineKind =
   | "filler"
   | "capper"
   | "labeler"
-  | "palletizer";
+  | "shrink"
+  | "palletizer"
+  | "wrapper";
 
 export type Station = {
   id: string;
