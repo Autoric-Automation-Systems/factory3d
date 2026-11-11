@@ -15,8 +15,10 @@ export const HALL = {
   maxZ: 12.5,
   conveyorZ: -4.4,
   stationZ: -8,
-  signZ: 0,
 };
+
+/** Placa da estação: pendurada sobre a própria máquina, logo acima da parte mais alta (~3,9 m). */
+const SIGN = { z: 0.45, y: 4.35, halfHeight: 0.46, cableTop: 7.6 };
 
 export const STATION_BOX = { halfX: 2.1, halfZ: 1.7 };
 
@@ -76,17 +78,17 @@ function AisleSign({
   );
 
   return (
-    <group position={[0, 0, HALL.signZ - station.position[1]]}>
-      {/* pendurada na treliça do teto, acima do corredor: lê-se andando sem tapar a máquina */}
-      <mesh position={[0, 5.55, 0]}>
-        <cylinderGeometry args={[0.035, 0.035, 4.1, 8]} />
+    <group position={[0, 0, SIGN.z]}>
+      {/* pendurada acima da máquina: lê-se chegando na estação sem tapar o equipamento */}
+      <mesh position={[0, (SIGN.y + SIGN.halfHeight + SIGN.cableTop) / 2, 0]}>
+        <cylinderGeometry args={[0.035, 0.035, SIGN.cableTop - SIGN.y - SIGN.halfHeight, 8]} />
         <meshStandardMaterial color="#39464f" metalness={0.6} roughness={0.4} />
       </mesh>
-      <mesh position={[0, 3.5, 0]}>
+      <mesh position={[0, SIGN.y + SIGN.halfHeight + 0.02, 0]}>
         <boxGeometry args={[0.16, 0.1, 0.16]} />
         <meshStandardMaterial color="#39464f" metalness={0.6} roughness={0.4} />
       </mesh>
-      <sprite position={[0, 2.95, 0]} scale={[2.8, 0.98, 1]}>
+      <sprite position={[0, SIGN.y, 0]} scale={[2.8, SIGN.halfHeight * 2, 1]}>
         <spriteMaterial map={texture} transparent depthWrite={false} toneMapped={false} />
       </sprite>
     </group>

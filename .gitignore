@@ -8,3 +8,6 @@ out
 .DS_Store
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# estado local do agente (memória/observações), não versionar
+.openhands/

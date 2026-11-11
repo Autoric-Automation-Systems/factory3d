@@ -1,32 +1,51 @@
 # Marca da Fábrica 3D
 
-Pasta pública: tudo aqui é servido em `/brand/...`. Basta soltar os arquivos com os
-nomes abaixo — nenhum código precisa mudar.
+Tudo em `public/` é servido na raiz. A marca tem duas fontes:
 
 ```
-public/brand/
-├── icons/         ícones do app / favicon (quadrados)
-├── logo/          símbolo, sem o nome (quadrado, fundo transparente)
-└── logo-name/     símbolo + nome (horizontal, fundo transparente)
+public/
+├── logo.png            símbolo (fonte)
+├── logo_name.png       símbolo + nome, empilhados (fonte)
+├── hero.jpg            imagem da home
+├── favicon.ico         favicon multi-tamanho
+├── favicon-16x16.png
+├── favicon-32x32.png
+├── apple-touch-icon.png
+├── android-chrome-192x192.png
+├── android-chrome-512x512.png
+└── brand/
+    ├── logo/logo.png            símbolo quadrado, com respiro
+    └── logo-name/logo-name.png  lockup horizontal (símbolo + palavra)
 ```
 
-## Nomes esperados
+`src/lib/brand.ts` procura nesta ordem: `brand/*.svg`, `brand/*.png` e, por
+último, `logo.png` / `logo_name.png`. Se nada existir, a interface cai no texto
+`F3` / `Fábrica 3D` — nada quebra.
 
-| Arquivo                              | Uso                                        | Tamanho sugerido |
-| ------------------------------------ | ------------------------------------------ | ---------------- |
-| `icons/favicon.svg`                   | aba do navegador                           | 64 × 64 (viewBox) |
-| `icons/icon-192.png`                  | atalho em Android / PWA                    | 192 × 192        |
-| `icons/icon-512.png`                  | splash / loja de apps                      | 512 × 512        |
-| `icons/apple-touch-icon.png`          | atalho em iOS                              | 180 × 180        |
-| `logo/logo.svg`                      | marca no trilho e no cabeçalho             | 1:1              |
-| `logo-name/logo-name.svg`            | marca com nome (trilho expandido)          | ~3:1             |
+## Por que existe o lockup horizontal
 
-Se um arquivo não existir, a interface cai automaticamente no texto `F3` /
-`Fábrica 3D` — nada quebra enquanto os arquivos não chegam.
+`logo_name.png` é quadrado, com o símbolo em cima e a palavra embaixo. No
+cabeçalho e no trilho lateral o espaço é horizontal, então `brand/logo-name`
+guarda uma versão lado a lado gerada a partir das mesmas peças (símbolo de
+`logo.png` + faixa da palavra recortada de `logo_name.png`).
+
+Para trocar a marca, substitua `logo.png` e `logo_name.png` e regere o lockup:
+
+```bash
+python3 tools/make-brand.py
+```
+
+## Ícones
+
+Os `<link rel="icon">`, `apple-touch-icon` e o manifesto são declarados em
+`src/app/layout.tsx` (`metadata.icons` e `metadata.manifest`). O
+`public/site.webmanifest` aponta para os PNGs acima. Ao trocar o símbolo,
+regerencie também `favicon.ico`, `favicon-16`, `favicon-32`, `apple-touch-icon`
+e `android-chrome-*` a partir de `logo.png`.
 
 ## Preferências
 
-- SVG quando possível; PNG com fundo transparente quando não.
-- Deixe ~8% de respiro nas bordas do `logo`, porque ele é aplicado em um quadrado
-  de 34 px e o canto arredondado recorta a imagem.
-- Use a mesma cor de acento do app (`#ffc53d`) para manter a leitura do tema escuro.
+- PNG com fundo transparente; 400 × 400 é suficiente para os dois arquivos.
+- Deixe ~6% de respiro nas bordas do símbolo, porque ele é aplicado em um
+  quadrado de 28–34 px com canto arredondado.
+

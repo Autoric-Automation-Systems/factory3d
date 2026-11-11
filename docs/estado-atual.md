@@ -19,6 +19,9 @@ que está implementado no código. Atualizar a cada entrega.
 | Plano gratuito com anúncios | pronto | Blocos de anúncio no hub, módulo, landing e painel da estação |
 | Persistência | pronta | Postgres (Neon) em produção, JSON em local, selecionado por `DATABASE_URL` |
 | Vídeos | preparado | Campo `videoUrl` por estação; hoje a "animação" é a própria cena 3D |
+| Marca | pronto | Logo e nome em `public/brand` (derivados de `logo.png` / `logo_name.png`), usados no cabeçalho, no trilho e no login |
+| Ícones | pronto | `favicon.ico`, PNGs 16/32/192/512, apple-touch e `site.webmanifest` declarados em `metadata` |
+| Home | pronto | Imagem `hero.jpg` no topo, atrás de véu de contraste |
 
 ## Decisões de projeto
 

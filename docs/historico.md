@@ -77,7 +77,23 @@ Verificado no código atual, não apenas no transcript.
 | Separar Empacotamento, Paletização e Envolvimento do Palete | **falta** | `src/content/envase/agua/08-paletizacao.ts` cobre as três etapas como uma estação só, "Embalagem e paletização" |
 | Botão de "visto" nos cards de Segurança e Falhas comuns | **falta** | o bloco `<div className="block">` com botão só existe para os blocos de conteúdo; as abas `seguranca` e `falhas` renderizam listas sem botão |
 | Respostas do quiz não estão sendo clicadas | **não confirmado** | `quiz-option` tem `onClick` e CSS de estado; a suspeita é captura de evento pela cena 3D por cima do painel, não a lógica |
-| Usar as imagens enviadas em `/public` | **falta** | `src/lib/brand.ts` ainda procura `/brand/logo/logo.svg` e `/brand/logo-name/logo-name.svg`, que não existem; `logo.png`, `logo_name.png` e `hero.jpg` estão commitados e não são usados em nenhum lugar |
+| Usar as imagens enviadas em `/public` | **feito em 11/11 21:55** | ver "Sessão de 11/11 (noite)" abaixo |
+
+## Sessão de 11/11 (noite) — marca, home, placa e ícones
+
+Quatro correções pedidas depois da primeira entrega.
+
+| Pedido | O que estava errado | Correção |
+| --- | --- | --- |
+| Logo não aplicado | `brandAssets()` só procurava `/brand/logo/logo.svg` e `/brand/logo-name/logo-name.svg`, que não existiam; o login ainda tinha `F3` fixo no JSX | `brand.ts` cai para `*.png` e depois para `logo.png` / `logo_name.png`; `tools/make-brand.py` gera `brand/logo/logo.png` e o lockup horizontal `brand/logo-name/logo-name.png`; `/entrar` passou a usar `BrandMark`/`BrandName` |
+| Hero não usado | `hero.jpg` estava no repositório e nenhuma página o mostrava | `next/image` em `page.tsx` com `fill`, `priority` e véu `.hero-veil` para manter o texto legível |
+| Ícone não aparece | Nenhum `<link rel="icon">` era emitido; o manifesto estava com `name` vazio e tema branco | `metadata.icons` + `manifest` em `layout.tsx`, ícones 16/32/192/512/apple no HTML e `site.webmanifest` corrigido |
+| Placa longe da máquina | A placa das estações era posicionada em `HALL.signZ` (z = 0), 7 m à frente da máquina, flutuando no meio do corredor | Agora fica a 0,45 m do centro da máquina, pendurada a 4,35 m (acima da parte mais alta, 3,9 m), com cabo até a treliça |
+
+O `logo_name.png` original é um lockup **empilhado** (símbolo sobre o nome) num
+quadrado de 400 px. No cabeçalho e no trilho o espaço é horizontal, então o
+lockup é derivado — não recriado: símbolo de `logo.png` + faixa do nome recortada
+de `logo_name.png`. Regerar com `python3 tools/make-brand.py`.
 
 ## O que está entregue
 

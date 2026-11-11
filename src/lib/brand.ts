@@ -11,12 +11,16 @@ function exists(url: string) {
   }
 }
 
-/** Só aponta para os arquivos de /brand que realmente existem, evitando 404 no console. */
+/** Só aponta para arquivos que existem, evitando 404 no console. */
 export function brandAssets(): BrandAssets {
-  const logo = "/brand/logo/logo.svg";
-  const logoName = "/brand/logo-name/logo-name.svg";
+  const pick = (candidates: string[]) => candidates.find(exists) ?? null;
+
   return {
-    logo: exists(logo) ? logo : null,
-    logoName: exists(logoName) ? logoName : null,
+    logo: pick(["/brand/logo/logo.svg", "/brand/logo/logo.png", "/logo.png"]),
+    logoName: pick([
+      "/brand/logo-name/logo-name.svg",
+      "/brand/logo-name/logo-name.png",
+      "/logo_name.png",
+    ]),
   };
 }

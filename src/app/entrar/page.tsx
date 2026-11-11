@@ -3,12 +3,16 @@ import { redirect } from "next/navigation";
 import { loginDemo, loginWithGoogle } from "@/app/actions";
 import { currentUser } from "@/lib/session";
 import { googleEnabled } from "@/auth";
+import { brandAssets } from "@/lib/brand";
+import BrandMark from "@/components/brand/BrandMark";
+import BrandName from "@/components/brand/BrandName";
 
 export const dynamic = "force-dynamic";
 
 export default async function EntrarPage() {
   const user = await currentUser();
   if (user) redirect("/hub");
+  const brand = brandAssets();
 
   return (
     <main
@@ -24,8 +28,8 @@ export default async function EntrarPage() {
         style={{ width: "100%", maxWidth: 430, boxShadow: "var(--shadow)" }}
       >
         <Link href="/" className="brand" style={{ marginBottom: 22 }}>
-          <span className="mark">F3</span>
-          <span>Fábrica 3D</span>
+          <BrandMark src={brand.logo} />
+          <BrandName src={brand.logoName} />
         </Link>
 
         <h1 style={{ fontSize: 24 }}>Entrar</h1>

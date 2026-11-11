@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import SiteHeader from "@/components/SiteHeader";
 import { lines, totalStations } from "@/content/catalog";
 
@@ -10,6 +11,15 @@ export default function LandingPage() {
       <SiteHeader />
 
       <section className="hero">
+        <Image
+          src="/hero.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="hero-media"
+        />
+        <div className="hero-veil" aria-hidden="true" />
         <div className="container">
           <div className="eyebrow">Treinamento industrial imersivo</div>
           <h1>Entre na fábrica. Entenda cada máquina.</h1>
