@@ -4,8 +4,9 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { Station } from "@/lib/types";
+import { DISCIPLINES } from "@/lib/types";
 import { Machine } from "./machines";
-import { labelTexture } from "./labels";
+import { labelTexture, signTexture } from "./labels";
 
 export const HALL = {
   minX: -32,
@@ -14,6 +15,7 @@ export const HALL = {
   maxZ: 12.5,
   conveyorZ: -4.4,
   stationZ: -8,
+  signZ: 0,
 };
 
 export const STATION_BOX = { halfX: 2.1, halfZ: 1.7 };
@@ -48,6 +50,49 @@ function Label({
   );
 }
 
+function AisleSign({
+  station,
+  index,
+  percent,
+  highlighted,
+}: {
+  station: Station;
+  index: number;
+  percent: number;
+  highlighted: boolean;
+}) {
+  const accent = highlighted ? "#ffc53d" : percent === 100 ? "#35d07f" : "#5f7686";
+  const disciplines = station.disciplines.map((d) => DISCIPLINES[d]).join(" · ");
+  const texture = useMemo(
+    () =>
+      signTexture({
+        index: index + 1,
+        name: station.name,
+        disciplines,
+        percent,
+        accent,
+      }),
+    [index, station.name, disciplines, percent, accent],
+  );
+
+  return (
+    <group position={[0, 0, HALL.signZ - station.position[1]]}>
+      {/* pendurada na treliça do teto, acima do corredor: lê-se andando sem tapar a máquina */}
+      <mesh position={[0, 5.55, 0]}>
+        <cylinderGeometry args={[0.035, 0.035, 4.1, 8]} />
+        <meshStandardMaterial color="#39464f" metalness={0.6} roughness={0.4} />
+      </mesh>
+      <mesh position={[0, 3.5, 0]}>
+        <boxGeometry args={[0.16, 0.1, 0.16]} />
+        <meshStandardMaterial color="#39464f" metalness={0.6} roughness={0.4} />
+      </mesh>
+      <sprite position={[0, 2.95, 0]} scale={[2.8, 0.98, 1]}>
+        <spriteMaterial map={texture} transparent depthWrite={false} toneMapped={false} />
+      </sprite>
+    </group>
+  );
+}
+
 function StationNode({
   station,
   percent,
@@ -60,7 +105,6 @@ function StationNode({
   index: number;
 }) {
   const color = percent === 100 ? "#35d07f" : percent > 0 ? "#ffc53d" : "#4c6272";
-  const accent = highlighted ? "#ffc53d" : percent === 100 ? "#35d07f" : "#7f94a2";
 
   return (
     <group position={[station.position[0], 0, station.position[1]]}>
@@ -68,11 +112,11 @@ function StationNode({
       <group position={[0, 0.12, 0]}>
         <Machine kind={station.machine} />
       </group>
-      <Label
-        title={station.name}
-        subtitle={percent === 100 ? "concluída" : percent > 0 ? `${percent}% concluído` : `estação ${index + 1}`}
-        accent={accent}
-        position={[0, 4.15, 0]}
+      <AisleSign
+        station={station}
+        index={index}
+        percent={percent}
+        highlighted={highlighted}
       />
     </group>
   );

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { logout } from "@/app/actions";
+import BrandMark from "@/components/brand/BrandMark";
+import BrandName from "@/components/brand/BrandName";
 
 export type ShellMap = {
   slug: string;
@@ -70,6 +72,7 @@ function IconExit() {
 }
 
 export default function GameFrame({
+  brand,
   userName,
   plan,
   percent,
@@ -81,6 +84,7 @@ export default function GameFrame({
   plan: "free" | "pro";
   percent: number;
   maps: ShellMap[];
+  brand: { logo: string | null; logoName: string | null };
   children?: React.ReactNode;
   defaultMapsOpen?: boolean;
 }) {
@@ -129,8 +133,10 @@ export default function GameFrame({
           aria-expanded={open}
           title={open ? "Recolher menu" : "Abrir menu"}
         >
-          <span className="mark">F3</span>
-          <span className="rail-label">Fábrica 3D</span>
+          <BrandMark src={brand.logo} />
+          <span className="rail-label">
+            <BrandName src={brand.logoName} />
+          </span>
           <span className="rail-chevron" aria-hidden="true">
             ›
           </span>

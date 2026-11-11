@@ -3,19 +3,23 @@ import { logout } from "@/app/actions";
 import { currentUser } from "@/lib/session";
 import { overallPercent } from "@/lib/progress";
 import { playableModules } from "@/content/catalog";
+import { brandAssets } from "@/lib/brand";
+import BrandMark from "./brand/BrandMark";
+import BrandName from "./brand/BrandName";
 
 const FIRST_MODULE = playableModules[0]?.slug ?? "agua";
 
 export default async function SiteHeader() {
   const user = await currentUser();
   const percent = user ? overallPercent(playableModules, user.progress) : 0;
+  const brand = brandAssets();
 
   return (
     <header className="site-header">
       <div className="container inner">
         <Link href={user ? "/hub" : "/"} className="brand">
-          <span className="mark">F3</span>
-          <span>Fábrica 3D</span>
+          <BrandMark src={brand.logo} />
+          <BrandName src={brand.logoName} />
         </Link>
 
         <nav className="nav">

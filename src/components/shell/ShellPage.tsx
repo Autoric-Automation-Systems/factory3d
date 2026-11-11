@@ -3,6 +3,7 @@ import { lines } from "@/content/catalog";
 import { moduleStats, overallPercent } from "@/lib/progress";
 import { playableModules } from "@/content/catalog";
 import type { UserRecord } from "@/lib/store";
+import { brandAssets } from "@/lib/brand";
 
 export function shellMaps(user: UserRecord): ShellMap[] {
   return lines.flatMap((line) =>
@@ -28,6 +29,7 @@ export default function ShellPage({
 }) {
   return (
     <GameFrame
+      brand={brandAssets()}
       userName={user.name}
       plan={user.plan}
       percent={overallPercent(playableModules, user.progress)}

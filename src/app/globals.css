@@ -370,10 +370,18 @@ ol {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.list-item strong {
+  color: var(--text);
 }
 
 .list-item:hover {
   border-color: #31424f;
+  background: var(--panel-2);
 }
 
 .num {
@@ -455,7 +463,7 @@ input[type="email"] {
   flex-direction: column;
   justify-content: space-between;
   padding: 16px;
-  z-index: 10;
+  z-index: 13;
 }
 
 .hud-top {
@@ -501,7 +509,8 @@ input[type="email"] {
 .prompt {
   pointer-events: auto;
   align-self: center;
-  margin-bottom: 26px;
+  /* altura da barra de controles (115px) + margem */
+  margin-bottom: 148px;
   background: rgba(10, 16, 21, 0.9);
   border: 1px solid rgba(255, 197, 61, 0.5);
   border-radius: 12px;
@@ -1329,5 +1338,64 @@ a.map-card:hover {
   }
   .void-hint {
     bottom: 22px;
+  }
+}
+
+/* ========================================================================== */
+/* Correções de leitura no painel e no menu                                   */
+/* ========================================================================== */
+
+/* matérias do painel são clicáveis: viram filtro das estações do módulo */
+.badge-btn {
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.badge-btn:hover {
+  color: var(--text);
+  border-color: #3a4d5a;
+}
+
+.badge-btn[data-active="true"] {
+  color: var(--text);
+  background: rgba(255, 197, 61, 0.14);
+  border-color: rgba(255, 197, 61, 0.55);
+}
+
+.disc-item {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* marca: usa /brand quando existir, cai no texto F3 quando não */
+.brand-logo,
+.brand-name {
+  display: block;
+  object-fit: contain;
+}
+
+.brand .brand-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.rail-brand .brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+.brand .brand-name,
+.rail-label .brand-name {
+  height: 18px;
+  width: auto;
+  max-width: 132px;
+}
+
+@media (max-width: 720px) {
+  .prompt {
+    margin-bottom: 150px;
   }
 }
