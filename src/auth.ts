@@ -9,6 +9,12 @@ export const googleEnabled = Boolean(
 
 export const DEMO_EMAIL = "visitante@factory3d.local";
 
+if (process.env.NODE_ENV === "production" && !process.env.AUTH_SECRET) {
+  console.error(
+    "[auth] AUTH_SECRET não definido: as sessões usam um segredo público e podem ser forjadas. Defina AUTH_SECRET no ambiente.",
+  );
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   secret: process.env.AUTH_SECRET ?? "factory3d-dev-secret",
