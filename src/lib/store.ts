@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { mkdirSync, readFileSync, renameSync, writeFileSync, existsSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { Pool } from "pg";
 
 export type Plan = "free" | "pro";
 
@@ -33,71 +34,187 @@ export type OrgRecord = {
   members: string[];
 };
 
-type Backend = {
-  readUser(id: string): Promise<UserRecord | undefined>;
-  readUserByEmail(email: string): Promise<UserRecord | undefined>;
-  writeUser(user: UserRecord): Promise<void>;
-  readOrg(id: string): Promise<OrgRecord | undefined>;
-  writeOrg(org: OrgRecord): Promise<void>;
-};
-
 export function emptyProgress(): StationProgress {
   return { visited: false, seenBlocks: [], quizPassed: false, bestScore: 0, visitedAt: null };
 }
 
 /* -------------------------------------------------------------------------- */
-/* Backend Redis (Vercel KV / Upstash) — usado em produção                     */
+/* Postgres (Neon) — backend de produção                                     */
 /* -------------------------------------------------------------------------- */
 
-const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL ?? "";
-const REDIS_TOKEN =
-  process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN ?? "";
+const CONNECTION_STRING = process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? "";
+export const postgresEnabled = Boolean(CONNECTION_STRING);
 
-export const redisEnabled = Boolean(REDIS_URL && REDIS_TOKEN);
+type PoolGlobal = { __f3dPool?: Pool; __f3dSchema?: Promise<void> };
+const poolGlobal = globalThis as unknown as PoolGlobal;
 
-async function redisCommand<T>(command: (string | number)[]): Promise<T> {
-  const response = await fetch(REDIS_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${REDIS_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(command),
-    cache: "no-store",
-  });
-  if (!response.ok) {
-    throw new Error(`Redis ${response.status}: ${await response.text()}`);
+function pool(): Pool {
+  if (!poolGlobal.__f3dPool) {
+    const isLocal = /localhost|127\.0\.0\.1/.test(CONNECTION_STRING);
+    poolGlobal.__f3dPool = new Pool({
+      connectionString: CONNECTION_STRING,
+      max: 3,
+      idleTimeoutMillis: 10_000,
+      ssl: isLocal ? undefined : { rejectUnauthorized: false },
+    });
   }
-  const payload = (await response.json()) as { result: T };
-  return payload.result;
+  return poolGlobal.__f3dPool;
 }
 
-const redisBackend: Backend = {
+const SCHEMA = `
+create table if not exists f3d_users (
+  id text primary key,
+  email text not null unique,
+  name text not null,
+  image text,
+  provider text not null,
+  plan text not null default 'free',
+  created_at timestamptz not null default now(),
+  favorites jsonb not null default '[]'::jsonb,
+  progress jsonb not null default '{}'::jsonb
+);
+
+create table if not exists f3d_orgs (
+  id text primary key,
+  name text not null,
+  seats integer not null,
+  plan text not null default 'escola',
+  created_at timestamptz not null default now(),
+  members jsonb not null default '[]'::jsonb
+);
+`;
+
+export function ensureSchema(): Promise<void> {
+  if (!poolGlobal.__f3dSchema) {
+    poolGlobal.__f3dSchema = pool()
+      .query(SCHEMA)
+      .then(() => undefined)
+      .catch((error) => {
+        poolGlobal.__f3dSchema = undefined;
+        throw error;
+      });
+  }
+  return poolGlobal.__f3dSchema;
+}
+
+type UserRow = {
+  id: string;
+  email: string;
+  name: string;
+  image: string | null;
+  provider: string;
+  plan: string;
+  created_at: Date;
+  favorites: string[];
+  progress: Record<string, StationProgress>;
+};
+
+type OrgRow = {
+  id: string;
+  name: string;
+  seats: number;
+  plan: string;
+  created_at: Date;
+  members: string[];
+};
+
+function toUser(row: UserRow): UserRecord {
+  return {
+    id: row.id,
+    email: row.email,
+    name: row.name,
+    image: row.image,
+    provider: row.provider,
+    plan: row.plan === "pro" ? "pro" : "free",
+    createdAt: row.created_at.toISOString(),
+    favorites: row.favorites ?? [],
+    progress: row.progress ?? {},
+  };
+}
+
+function toOrg(row: OrgRow): OrgRecord {
+  return {
+    id: row.id,
+    name: row.name,
+    seats: row.seats,
+    plan: "escola",
+    createdAt: row.created_at.toISOString(),
+    members: row.members ?? [],
+  };
+}
+
+const SQL = {
+  userById: "select * from f3d_users where id = $1",
+  userByEmail: "select * from f3d_users where email = $1",
+  upsertUser: `
+    insert into f3d_users (id, email, name, image, provider, plan, created_at, favorites, progress)
+    values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9::jsonb)
+    on conflict (id) do update set
+      email = excluded.email,
+      name = excluded.name,
+      image = excluded.image,
+      provider = excluded.provider,
+      plan = excluded.plan,
+      favorites = excluded.favorites,
+      progress = excluded.progress
+  `,
+  orgById: "select * from f3d_orgs where id = $1",
+  upsertOrg: `
+    insert into f3d_orgs (id, name, seats, plan, created_at, members)
+    values ($1, $2, $3, $4, $5, $6::jsonb)
+    on conflict (id) do update set
+      name = excluded.name,
+      seats = excluded.seats,
+      plan = excluded.plan,
+      members = excluded.members
+  `,
+};
+
+const postgresBackend: Backend = {
   async readUser(id) {
-    const raw = await redisCommand<string | null>(["GET", `f3d:user:${id}`]);
-    return raw ? (JSON.parse(raw) as UserRecord) : undefined;
+    await ensureSchema();
+    const { rows } = await pool().query<UserRow>(SQL.userById, [id]);
+    return rows[0] ? toUser(rows[0]) : undefined;
   },
   async readUserByEmail(email) {
-    const id = await redisCommand<string | null>(["GET", `f3d:email:${email}`]);
-    if (!id) return undefined;
-    return redisBackend.readUser(id);
+    await ensureSchema();
+    const { rows } = await pool().query<UserRow>(SQL.userByEmail, [email]);
+    return rows[0] ? toUser(rows[0]) : undefined;
   },
   async writeUser(user) {
-    await redisCommand(["SET", `f3d:user:${user.id}`, JSON.stringify(user)]);
-    await redisCommand(["SET", `f3d:email:${user.email}`, user.id]);
-    await redisCommand(["SADD", "f3d:users", user.id]);
+    await ensureSchema();
+    await pool().query(SQL.upsertUser, [
+      user.id,
+      user.email,
+      user.name,
+      user.image,
+      user.provider,
+      user.plan,
+      user.createdAt,
+      JSON.stringify(user.favorites),
+      JSON.stringify(user.progress),
+    ]);
   },
   async readOrg(id) {
-    const raw = await redisCommand<string | null>(["GET", `f3d:org:${id}`]);
-    return raw ? (JSON.parse(raw) as OrgRecord) : undefined;
+    await ensureSchema();
+    const { rows } = await pool().query<OrgRow>(SQL.orgById, [id]);
+    return rows[0] ? toOrg(rows[0]) : undefined;
   },
   async writeOrg(org) {
-    await redisCommand(["SET", `f3d:org:${org.id}`, JSON.stringify(org)]);
+    await ensureSchema();
+    await pool().query(SQL.upsertOrg, [
+      org.id,
+      org.name,
+      org.seats,
+      org.plan,
+      org.createdAt,
+      JSON.stringify(org.members),
+    ]);
   },
 };
 
 /* -------------------------------------------------------------------------- */
-/* Backend arquivo JSON — usado em desenvolvimento local                      */
+/* Arquivo JSON — usado em desenvolvimento local                             */
 /* -------------------------------------------------------------------------- */
 
 const DATA_DIR = process.env.DATA_DIR || ".data";
@@ -105,10 +222,10 @@ const DB_PATH = path.join(process.cwd(), DATA_DIR, "db.json");
 
 type FileDb = { users: UserRecord[]; orgs: OrgRecord[] };
 
-const globalStore = globalThis as unknown as { __factory3dDb?: FileDb };
+const fileGlobal = globalThis as unknown as { __f3dFileDb?: FileDb };
 
 function loadFile(): FileDb {
-  if (globalStore.__factory3dDb) return globalStore.__factory3dDb;
+  if (fileGlobal.__f3dFileDb) return fileGlobal.__f3dFileDb;
   let db: FileDb = { users: [], orgs: [] };
   try {
     if (existsSync(DB_PATH)) {
@@ -118,7 +235,7 @@ function loadFile(): FileDb {
   } catch {
     db = { users: [], orgs: [] };
   }
-  globalStore.__factory3dDb = db;
+  fileGlobal.__f3dFileDb = db;
   return db;
 }
 
@@ -130,8 +247,8 @@ function persistFile(db: FileDb) {
     writeFileSync(tmp, JSON.stringify(db, null, 2), "utf8");
     renameSync(tmp, DB_PATH);
   } catch (error) {
-    // Serverless tem sistema de arquivos somente leitura: sem Redis o progresso
-    // não persiste entre requisições, mas o app continua respondendo.
+    // Serverless tem sistema de arquivos somente leitura: sem Postgres o
+    // progresso não persiste entre requisições, mas o app continua respondendo.
     console.warn(`[store] não foi possível gravar ${DB_PATH}:`, error);
   }
 }
@@ -162,11 +279,21 @@ const fileBackend: Backend = {
   },
 };
 
-export const backend: Backend = redisEnabled ? redisBackend : fileBackend;
+/* -------------------------------------------------------------------------- */
+/* API usada pelo app                                                        */
+/* -------------------------------------------------------------------------- */
 
-/* -------------------------------------------------------------------------- */
-/* API usada pelo app                                                         */
-/* -------------------------------------------------------------------------- */
+type Backend = {
+  readUser(id: string): Promise<UserRecord | undefined>;
+  readUserByEmail(email: string): Promise<UserRecord | undefined>;
+  writeUser(user: UserRecord): Promise<void>;
+  readOrg(id: string): Promise<OrgRecord | undefined>;
+  writeOrg(org: OrgRecord): Promise<void>;
+};
+
+export const backendName: "postgres" | "file" = postgresEnabled ? "postgres" : "file";
+
+const backend: Backend = postgresEnabled ? postgresBackend : fileBackend;
 
 export async function getUserById(id: string): Promise<UserRecord | undefined> {
   return backend.readUser(id);

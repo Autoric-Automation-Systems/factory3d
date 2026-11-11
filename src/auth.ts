@@ -9,15 +9,18 @@ export const googleEnabled = Boolean(
 
 export const DEMO_EMAIL = "visitante@factory3d.local";
 
-if (process.env.NODE_ENV === "production" && !process.env.AUTH_SECRET) {
+const AUTH_SECRET = process.env.AUTH_SECRET;
+const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction && !AUTH_SECRET) {
   console.error(
-    "[auth] AUTH_SECRET não definido: as sessões usam um segredo público e podem ser forjadas. Defina AUTH_SECRET no ambiente.",
+    "[auth] AUTH_SECRET não definido. As sessões não podem ser assinadas de forma segura e todo login falhará. Defina AUTH_SECRET nas variáveis de ambiente.",
   );
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  secret: process.env.AUTH_SECRET ?? "factory3d-dev-secret",
+  secret: AUTH_SECRET ?? (isProduction ? undefined : "factory3d-dev-secret"),
   session: { strategy: "jwt" },
   pages: { signIn: "/entrar" },
   providers: [

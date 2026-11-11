@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { getUserById, redisEnabled } from "@/lib/store";
+import { backendName, getUserById } from "@/lib/store";
 
 export async function GET() {
   const session = await auth();
@@ -13,6 +13,6 @@ export async function GET() {
     favorites: user.favorites,
     plan: user.plan,
     name: user.name,
-    storage: redisEnabled ? "redis" : "file",
+    storage: backendName,
   });
 }

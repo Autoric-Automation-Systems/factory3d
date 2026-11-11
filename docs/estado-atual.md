@@ -17,7 +17,7 @@ que está implementado no código. Atualizar a cada entrega.
 | Quiz | pronto | 3 questões por estação, correção imediata, melhor nota salva |
 | Login | parcial | Código pronto para Google; falta criar credenciais OAuth |
 | Plano gratuito com anúncios | pronto | Blocos de anúncio no hub, módulo, landing e painel da estação |
-| Persistência | pronta | Redis REST em produção, JSON em local, selecionado por env |
+| Persistência | pronta | Postgres (Neon) em produção, JSON em local, selecionado por `DATABASE_URL` |
 | Vídeos | preparado | Campo `videoUrl` por estação; hoje a "animação" é a própria cena 3D |
 
 ## Decisões de projeto
@@ -57,7 +57,7 @@ que está implementado no código. Atualizar a cada entrega.
 
 ## Próximos passos priorizados
 
-1. Publicar na Vercel, configurar Redis e credenciais Google.
+1. Publicar na Vercel, conectar o Neon (`DATABASE_URL`) e as credenciais Google.
 2. Linha Automotivo: 4 módulos (combustão, elétrico, moto, bicicleta).
 3. Painel de turma: vagas rotativas, mapa por aluno, relatório.
 4. Checkout (Stripe/Mercado Pago) para Individual e Escola.

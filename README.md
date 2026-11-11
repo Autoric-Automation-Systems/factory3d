@@ -46,16 +46,25 @@ demonstração continua funcionando.
 
 ## Dados
 
-O `src/lib/store.ts` escolhe o backend em tempo de execução:
+O `src/lib/store.ts` escolhe o backend em tempo de execução pela presença de
+`DATABASE_URL` (ou `POSTGRES_URL`):
 
 | Backend | Quando | Persistência |
 | --- | --- | --- |
-| Redis REST (Upstash / Vercel KV) | `KV_REST_API_URL` + `KV_REST_API_TOKEN` (ou `UPSTASH_REDIS_REST_*`) | Permanente, funciona em serverless |
-| Arquivo JSON | sem essas variáveis | `DATA_DIR/db.json`, bom só para uso local |
+| Postgres (Neon) | `DATABASE_URL` definida | Permanente, funciona em serverless |
+| Arquivo JSON | sem `DATABASE_URL` | `DATA_DIR/db.json`, bom só para uso local |
 
-Em produção sem Redis o progresso não sobrevive entre requisições, e o hub mostra
-um aviso vermelho dizendo exatamente isso. **Antes de divulgar o link, configure
-o Redis.**
+As tabelas `f3d_users` e `f3d_orgs` são criadas automaticamente na primeira
+consulta (`create table if not exists`), então não há passo de migração. Progresso
+e favoritos ficam em colunas `jsonb`.
+
+Em produção sem `DATABASE_URL` o progresso não sobrevive entre requisições, e o
+hub mostra um aviso vermelho dizendo exatamente isso.
+
+> **Sessões:** `AUTH_SECRET` precisa ser estável. Se ele mudar (ou se antes o app
+> rodava sem ele), os cookies já emitidos não podem ser decifrados e o log mostra
+> `no matching decryption secret`. Basta limpar os cookies do site — o usuário
+> apenas precisa entrar novamente.
 
 ## Deploy na Vercel
 
@@ -69,13 +78,15 @@ o Redis.**
 | `GOOGLE_CLIENT_ID` | do Google Cloud Console |
 | `GOOGLE_CLIENT_SECRET` | do Google Cloud Console |
 
-3. Em **Storage / Marketplace**, adicione **Upstash Redis** (plano free serve) e
-   conecte ao projeto. As variáveis `KV_REST_API_URL` e `KV_REST_API_TOKEN` são
-   criadas automaticamente.
+3. Conecte o banco **Neon** ao projeto (Storage → Neon). A integração injeta
+   `DATABASE_URL` automaticamente; o app cria as tabelas no primeiro acesso.
 4. No Google Cloud Console, adicione o domínio de produção:
    - Origem: `https://SEU-DOMINIO.vercel.app`
    - Redirect: `https://SEU-DOMINIO.vercel.app/api/auth/callback/google`
 5. Redeploy. O hub não deve mais exibir o aviso de armazenamento.
+
+Ao trocar qualquer uma dessas variáveis, faça um **Redeploy** — variáveis novas só
+entram em vigor numa nova implantação.
 
 Sem `GOOGLE_CLIENT_ID`/`SECRET` o botão do Google fica desabilitado e o acesso de
 demonstração continua disponível — útil para revisar a aplicação antes de criar
@@ -140,7 +151,7 @@ passo (Stripe ou Mercado Pago).
 
 ## Roadmap
 
-1. Publicar (Vercel + Redis + Google OAuth).
+1. Publicar (Vercel + Neon + Google OAuth).
 2. Linha **Automotivo** — carro a combustão, carro elétrico, moto, bicicleta.
 3. Turmas: painel da escola, atribuição de vaga por mapa, relatório.
 4. Modelo de cobrança e checkout.
