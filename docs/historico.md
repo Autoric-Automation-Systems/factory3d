@@ -117,6 +117,35 @@ caminho existente, então remover um arquivo nunca gera 404 — a interface cai 
 texto. As fotos dos cards têm origem, licença e autor em `public/maps/CREDITS.md`
 e podem ser regeradas com `python3 tools/fetch-map-images.py`.
 
+## Sessão de 11/11 (21:00) — matérias por disciplina e fotos do envase
+
+Pedido central: o conteúdo das estações estava preso ao ponto de vista do
+processo (os quatro blocos), então quem estuda mecânica não achava o assunto
+junto. A estação passou a ter **dois eixos de leitura**: o processo (`blocks`) e
+a disciplina (`materias`).
+
+| Pedido | O que estava errado | Correção |
+| --- | --- | --- |
+| Conteúdo por matéria | cada estação só tinha quatro blocos de processo, sem recorte por disciplina | novo campo `materias: MateriaTopic[]` em `types.ts`: `{ id, discipline, level, title, summary, bullets[] }`, nível 1–3 (fundamento, operação, diagnóstico). São 12–17 tópicos por estação, 176 no total |
+| Ler uma disciplina inteira | não havia como ver mecânica em todas as estações | página `/materias` com índice por disciplina (quantos tópicos, em quantas estações) e feed que atravessa o módulo, marcando o tópico como visto e levando à estação |
+| Navegação | "Matérias" não existia em nenhum menu | link no trilho (`GameFrame`), no cabeçalho (`SiteNav`) e botão "Matérias da linha" em `/modulos/[slug]` |
+| Painel da estação | as abas de matéria não cabiam e o cabeçalho rolava junto com o texto | `StationPanel` reescrito: barra fixa (A−/A+, favoritar, fechar) e corpo rolável, com abas `Processo · <disciplinas> · Segurança · Falhas`; saiu a navegação lateral entre estações |
+| Progresso | só blocos e abas de revisão contavam | `stationChecklist` soma também os tópicos de matéria, então eles entram nos 70% de leitura |
+| Logo do dev no rodapé | `dev-mark.png` era "símbolo + AUTORIC" recortado de `dev-logo.png`, com um vão entre símbolo e nome que deixava o bloco ilegível a 22 px | `make-brand.py` recorta **só o símbolo** (105×96) e o nome fica em texto ao lado, no rodapé |
+| Fotos dos mapas do envase | as cinco fotos eram de linha antiga, lata ou garrafa isolada | novas fotos de linha de envase para água, refrigerante, cerveja, molho de tomate e azeite; `CREDITS.md` com origem, licença e autor |
+
+Duas decisões de produto tomadas no caminho:
+
+1. **Matéria não é paywall.** O plano gratuito promete "Módulo Água completo",
+   então todos os tópicos ficam abertos; o pago continua sendo outros mapas, sem
+   anúncios e certificado. Chegou a existir bloqueio de 3 tópicos por matéria e
+   foi removido por contrariar `/precos` e impedir 100% no plano gratuito.
+2. **A página `/materias` é a rota acessível.** Quem não consegue jogar 3D chega
+   ao conteúdo técnico por ela ou pela lista de estações.
+
+`tools/fetch-map-images.py` estava com erro de sintaxe (`{slug: ...}` sem aspas
+nas chaves) e não rodava; foi corrigido e as fotos foram regeradas.
+
 ## O que está entregue
 
 Resumo; o detalhe fica em `estado-atual.md`.
@@ -157,6 +186,7 @@ continua legível na nuvem.
 
 | Data | Título | Repositório |
 | --- | --- | --- |
+| 11/11 21:00 | ✨ Fábrica 3D — matérias e fotos do envase | este |
 | 11/11 15:59 | ✨ Fábrica 3D | este (criou o projeto) |
 | 04/11 10:49 | 🔧 Store77 | store77 |
 | 03/11 19:42 | ✨ NextGen | nextgen |
