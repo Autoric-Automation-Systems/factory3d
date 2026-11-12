@@ -1379,19 +1379,28 @@ a.materia-card:hover {
   transform: none;
 }
 
+/* Atalho "M": só existe com teclado e com o trilho aberto. `display` em vez de
+   `opacity` porque escondido ele ainda ocupava 24 px e empurrava o ícone para
+   fora do trilho recolhido. */
 .rail-kbd {
+  display: none;
+  align-items: center;
   margin-left: auto;
-  padding: 1px 6px;
+  height: 18px;
+  padding: 0 6px;
   border-radius: 5px;
   border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
   color: #7d8f9d;
   font-size: 10px;
   font-weight: 700;
-  opacity: 0;
+  line-height: 1;
 }
 
-.shell.is-open .rail-kbd {
-  opacity: 1;
+@media (min-width: 901px) {
+  .shell.is-open .rail-kbd {
+    display: inline-flex;
+  }
 }
 
 .rail-foot {

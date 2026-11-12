@@ -159,6 +159,7 @@ Rodada de correção depois de usar o app no celular.
 | Badges de matéria no lugar antigo | o painel repetia as disciplinas do catálogo no topo, além das abas novas | a lista de disciplinas saiu do painel e as disciplinas da estação passaram a ser derivadas dos tópicos em `catalog.ts` (`withDisciplines`), fonte única para placa 3D, HUD, favoritos e módulo |
 | Aba de matéria parecia selecionada | `.tab[data-kind="materia"]` tinha fundo e borda dourados sempre, lendo como estado ativo | todas as abas têm a mesma forma neutra; a matéria se distingue por um ponto dourado de 6 px, e o ativo é o mesmo para todas |
 | Menu do cabeçalho "muito ruim" | lista corrida de 8 links, sem grupos nem indicação da página atual | três grupos com separador, linhas de 44 px e `data-active`/`aria-current` no link da página |
+| "M" solto ao lado de Mapas | o atalho `.rail-kbd` era escondido com `opacity: 0`, então continuava ocupando 24 px e empurrava o ícone da linha: no trilho recolhido do celular ele ia para x = −5 e era cortado | `display: none` por padrão e `inline-flex` só em `min-width: 901px` com o trilho aberto — o atalho é de teclado, não de toque |
 
 ## O que está entregue
 
