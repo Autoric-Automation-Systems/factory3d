@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { DisciplineId, Station } from "@/lib/types";
-import { DISCIPLINES } from "@/lib/types";
 import { LEVEL_LABEL, stationMaterias } from "@/lib/materias";
 
 type Tab = {
@@ -146,11 +145,6 @@ export default function StationPanel({
           </p>
 
           <div className="pill-list" style={{ marginBottom: 12 }}>
-            {station.disciplines.map((d) => (
-              <span key={d} className="badge">
-                {DISCIPLINES[d]}
-              </span>
-            ))}
             <span className="badge">{station.minutes} min</span>
             <span className={`badge ${percent === 100 ? "badge-ok" : "badge-accent"}`}>
               {percent}% concluído
@@ -173,11 +167,7 @@ export default function StationPanel({
                 }
                 onClick={() => setActive(tab.id)}
               >
-                {tab.kind === "materia" && (
-                  <span className="tab-tag" aria-hidden="true">
-                    matéria
-                  </span>
-                )}
+                {tab.kind === "materia" && <span className="tab-dot" aria-hidden="true" />}
                 {isSeen(tab.id) ? "✓ " : ""}
                 {tab.label}
                 {tab.kind === "materia" && (

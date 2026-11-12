@@ -13,6 +13,8 @@ type Props = {
   firstModule: string;
 };
 
+type NavLink = { href: string; label: string };
+
 export default function SiteNav({ user, percent, firstModule }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -28,6 +30,9 @@ export default function SiteNav({ user, percent, firstModule }: Props) {
     return () => window.removeEventListener("keydown", close);
   }, [open]);
 
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
+
   const initials = user ? user.name.trim().slice(0, 2).toUpperCase() : "";
   const avatar = user ? (
     user.image ? (
@@ -42,17 +47,45 @@ export default function SiteNav({ user, percent, firstModule }: Props) {
     )
   ) : null;
 
+  const start: NavLink[] = [
+    { href: "/hub", label: "Início" },
+    { href: `/modulos/${firstModule}`, label: "Estações" },
+    { href: "/materias", label: "Matérias" },
+  ];
+  const study: NavLink[] = [
+    { href: "/favoritos", label: "Favoritos" },
+    { href: "/conquistas", label: "Conquistas" },
+  ];
+  const account: NavLink[] = [
+    { href: "/precos", label: "Planos" },
+    { href: "/perfil", label: "Perfil" },
+  ];
+  const guest: NavLink[] = [
+    { href: "/#como-funciona", label: "Como funciona" },
+    { href: "/precos", label: "Planos" },
+  ];
+
+  const link = (item: NavLink) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      data-active={isActive(item.href)}
+      aria-current={isActive(item.href) ? "page" : undefined}
+    >
+      {item.label}
+    </Link>
+  );
+
   return (
     <>
       <nav className="nav">
         {user ? (
           <>
-            <Link href="/hub">Início</Link>
-            <Link href={`/modulos/${firstModule}`}>Estações</Link>
-            <Link href="/materias">Matérias</Link>
-            <Link href="/favoritos">Favoritos</Link>
-            <Link href="/conquistas">Conquistas</Link>
-            <Link href="/precos">Planos</Link>
+            {start.map(link)}
+            {study.map(link)}
+            <Link href="/precos" data-active={isActive("/precos")}>
+              Planos
+            </Link>
             <span className="badge badge-accent" title="Progresso geral">
               {percent}%
             </span>
@@ -67,8 +100,7 @@ export default function SiteNav({ user, percent, firstModule }: Props) {
           </>
         ) : (
           <>
-            <Link href="/#como-funciona">Como funciona</Link>
-            <Link href="/precos">Planos</Link>
+            {guest.map(link)}
             <Link href="/entrar" className="btn btn-primary btn-sm">
               Entrar
             </Link>
@@ -120,27 +152,24 @@ export default function SiteNav({ user, percent, firstModule }: Props) {
                 </span>
               </Link>
             </div>
-            <Link href="/hub">Início</Link>
-            <Link href={`/modulos/${firstModule}`}>Estações</Link>
-            <Link href="/materias">Matérias</Link>
-            <Link href="/favoritos">Favoritos</Link>
-            <Link href="/conquistas">Conquistas</Link>
-            <Link href="/precos">Planos</Link>
-            <Link href="/perfil">Perfil</Link>
-            <form action={logout}>
-              <button className="mobile-nav-exit" type="submit">
-                Sair da conta
-              </button>
-            </form>
+            <div className="mobile-nav-group">{start.map(link)}</div>
+            <div className="mobile-nav-group">{study.map(link)}</div>
+            <div className="mobile-nav-group">
+              {account.map(link)}
+              <form action={logout}>
+                <button className="mobile-nav-exit" type="submit">
+                  Sair da conta
+                </button>
+              </form>
+            </div>
           </>
         ) : (
-          <>
-            <Link href="/#como-funciona">Como funciona</Link>
-            <Link href="/precos">Planos</Link>
+          <div className="mobile-nav-group">
+            {guest.map(link)}
             <Link href="/entrar" className="btn btn-primary btn-block">
               Entrar
             </Link>
-          </>
+          </div>
         )}
       </div>
     </>

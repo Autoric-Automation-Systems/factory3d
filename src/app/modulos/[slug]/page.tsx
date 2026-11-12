@@ -5,7 +5,7 @@ import AdSlot from "@/components/AdSlot";
 import { requireUser } from "@/lib/session";
 import { moduleStats, TROPHY_LABEL } from "@/lib/progress";
 import { getModule } from "@/content/catalog";
-import { DISCIPLINES } from "@/lib/types";
+import { stationMaterias } from "@/lib/materias";
 
 export const dynamic = "force-dynamic";
 
@@ -72,37 +72,40 @@ export default async function ModulePage({
         </div>
 
         <div className="list">
-          {stats.stations.map(({ station, percent }, index) => (
-            <Link
-              key={station.id}
-              href={`/jogar/${mod.slug}?e=${station.id}`}
-              className="list-item"
-            >
-              <span className="num" data-done={percent === 100}>
-                {percent === 100 ? "✓" : index + 1}
-              </span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="row" style={{ justifyContent: "space-between" }}>
-                  <strong>{station.name}</strong>
-                  <span className="small muted">{percent}%</span>
-                </div>
-                <div className="small muted" style={{ marginTop: 2 }}>
-                  {station.role}
-                </div>
-                <div className="pill-list" style={{ marginTop: 8 }}>
-                  {station.disciplines.map((d) => (
-                    <span className="badge" key={d}>
-                      {DISCIPLINES[d]}
+          {stats.stations.map(({ station, percent }, index) => {
+            const materias = stationMaterias(station);
+            return (
+              <Link
+                key={station.id}
+                href={`/jogar/${mod.slug}?e=${station.id}`}
+                className="list-item"
+              >
+                <span className="num" data-done={percent === 100}>
+                  {percent === 100 ? "✓" : index + 1}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="row" style={{ justifyContent: "space-between" }}>
+                    <strong>{station.name}</strong>
+                    <span className="small muted">{percent}%</span>
+                  </div>
+                  <div className="small muted" style={{ marginTop: 2 }}>
+                    {station.role}
+                  </div>
+                  <div className="pill-list" style={{ marginTop: 8 }}>
+                    {materias.map((group) => (
+                      <span className="badge" key={group.discipline}>
+                        {group.label}
+                      </span>
+                    ))}
+                    <span className="badge">{station.minutes} min</span>
+                    <span className="badge badge-accent">
+                      {station.materias.length} tópicos
                     </span>
-                  ))}
-                  <span className="badge">{station.minutes} min</span>
-                  <span className="badge badge-accent">
-                    {station.materias.length} tópicos
-                  </span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
 
         {user.plan === "free" && (

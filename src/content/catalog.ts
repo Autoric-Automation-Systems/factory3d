@@ -1,4 +1,4 @@
-import type { LearningModule, ProductionLine, Station } from "@/lib/types";
+import type { DisciplineId, LearningModule, ProductionLine, Station } from "@/lib/types";
 import { captacao } from "./envase/agua/01-captacao";
 import { filtracao } from "./envase/agua/02-filtracao";
 import { osmose } from "./envase/agua/03-osmose";
@@ -9,6 +9,18 @@ import { rotulagem } from "./envase/agua/07-rotulagem";
 import { empacotamento } from "./envase/agua/08-empacotamento";
 import { paletizacao } from "./envase/agua/09-paletizacao";
 import { envolvimento } from "./envase/agua/10-envolvimento";
+
+/** As disciplinas da estação saem dos tópicos: uma fonte só, sem lista paralela. */
+const withDisciplines = (station: Station): Station => {
+  const disciplines: DisciplineId[] = [];
+  for (const topic of station.materias) {
+    if (!disciplines.includes(topic.discipline)) disciplines.push(topic.discipline);
+  }
+  if (station.safety.length > 0 && !disciplines.includes("seguranca")) {
+    disciplines.push("seguranca");
+  }
+  return { ...station, disciplines };
+};
 
 export const agua: LearningModule = {
   id: "envase-agua",
@@ -35,7 +47,7 @@ export const agua: LearningModule = {
     empacotamento,
     paletizacao,
     envolvimento,
-  ],
+  ].map(withDisciplines),
 };
 
 const soon = (

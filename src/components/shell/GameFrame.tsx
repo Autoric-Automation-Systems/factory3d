@@ -124,7 +124,9 @@ export default function GameFrame({
   const [mapsOpen, setMapsOpen] = useState(defaultMapsOpen);
   const [helpOpen, setHelpOpen] = useState(false);
 
+  /* No celular o trilho é gaveta: abre fechado em toda página. */
   useEffect(() => {
+    if (isMobile()) return;
     setOpen(window.localStorage.getItem("f3d-rail") === "open");
   }, []);
 
@@ -134,6 +136,7 @@ export default function GameFrame({
       if (event.key === "Escape") {
         setMapsOpen(false);
         setHelpOpen(false);
+        setOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -142,15 +145,28 @@ export default function GameFrame({
 
   const toggleRail = () => {
     setOpen((value) => {
-      window.localStorage.setItem("f3d-rail", value ? "closed" : "open");
+      if (!isMobile()) {
+        window.localStorage.setItem("f3d-rail", value ? "closed" : "open");
+      }
       return !value;
     });
   };
 
+  const isMobile = () => window.matchMedia("(max-width: 900px)").matches;
+
   const openMaps = () => {
     setMapsOpen((value) => !value);
-    if (!open) toggleRail();
+    // no desktop a gaveta acompanha o trilho; no celular ela cobre a tela inteira
+    if (isMobile()) setOpen(false);
+    else if (!open) toggleRail();
   };
+
+  const openHelp = () => {
+    setHelpOpen(true);
+    if (isMobile()) setOpen(false);
+  };
+
+  const closeRail = () => setOpen(false);
 
   const initials = userName
     .split(" ")
@@ -192,23 +208,23 @@ export default function GameFrame({
               M
             </span>
           </button>
-          <Link className="rail-item" href="/materias" title="Matérias">
+          <Link className="rail-item" href="/materias" onClick={closeRail} title="Matérias">
             <IconBook />
             <span className="rail-label">Matérias</span>
           </Link>
-          <Link className="rail-item" href="/favoritos" title="Favoritos">
+          <Link className="rail-item" href="/favoritos" onClick={closeRail} title="Favoritos">
             <IconStar />
             <span className="rail-label">Favoritos</span>
           </Link>
-          <Link className="rail-item" href="/conquistas" title="Conquistas">
+          <Link className="rail-item" href="/conquistas" onClick={closeRail} title="Conquistas">
             <IconTrophy />
             <span className="rail-label">Conquistas</span>
           </Link>
-          <Link className="rail-item" href="/precos" title="Planos">
+          <Link className="rail-item" href="/precos" onClick={closeRail} title="Planos">
             <IconCard />
             <span className="rail-label">Planos</span>
           </Link>
-          <Link className="rail-item" href="/perfil" title="Perfil">
+          <Link className="rail-item" href="/perfil" onClick={closeRail} title="Perfil">
             <IconUser />
             <span className="rail-label">Perfil</span>
           </Link>
@@ -216,7 +232,7 @@ export default function GameFrame({
             type="button"
             className="rail-item"
             data-active={helpOpen}
-            onClick={() => setHelpOpen(true)}
+            onClick={openHelp}
             title="Ajuda"
           >
             <IconHelp />
@@ -225,7 +241,7 @@ export default function GameFrame({
         </nav>
 
         <div className="rail-foot">
-          <Link className="rail-user" href="/perfil" title="Perfil">
+          <Link className="rail-user" href="/perfil" onClick={closeRail} title="Perfil">
             {userImage ? (
               <img
                 className="rail-avatar rail-avatar-img"
@@ -251,6 +267,8 @@ export default function GameFrame({
           </form>
         </div>
       </aside>
+
+      {open && <div className="rail-scrim" onClick={toggleRail} aria-hidden="true" />}
 
       <div className="stage">
         {children}

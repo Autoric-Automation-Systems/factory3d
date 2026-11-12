@@ -146,6 +146,20 @@ Duas decisões de produto tomadas no caminho:
 `tools/fetch-map-images.py` estava com erro de sintaxe (`{slug: ...}` sem aspas
 nas chaves) e não rodava; foi corrigido e as fotos foram regeradas.
 
+## Sessão de 11/11 (22:40) — menu do celular e badges
+
+Rodada de correção depois de usar o app no celular.
+
+| Pedido | O que estava errado | Correção |
+| --- | --- | --- |
+| Menu mobile desalinhado e sem o logo | ao abrir, o trilho ficava vazio: `.shell.is-open .rail-brand .brand-logo` escondia o símbolo e, ≤720 px, `.rail-brand .rail-label` era `display:none`, então nem o lockup aparecia | aberto, o lockup ocupa o lugar do símbolo, o chevron aparece e os itens alinham à esquerda (`justify-content: flex-start`, `padding: 0 12px`) |
+| Clique no vazio para fechar | a única forma de fechar era tocar a área invisível do topo do trilho | scrim (`.rail-scrim`) cobre o palco e fecha no toque; o trilho também fecha ao navegar e não persiste aberto entre páginas no celular |
+| Página abria com o trilho aberto | `f3d-rail` no `localStorage` vazava o estado entre páginas | leitura e escrita do estado só valem acima de 900 px |
+| Gaveta de mapas com faixa do palco | `.drawer-layer` era `absolute` dentro do palco (62 px a menos) | no celular a gaveta é `fixed` e cobre a tela inteira; abrir mapas/ajuda fecha o trilho |
+| Badges de matéria no lugar antigo | o painel repetia as disciplinas do catálogo no topo, além das abas novas | a lista de disciplinas saiu do painel e as disciplinas da estação passaram a ser derivadas dos tópicos em `catalog.ts` (`withDisciplines`), fonte única para placa 3D, HUD, favoritos e módulo |
+| Aba de matéria parecia selecionada | `.tab[data-kind="materia"]` tinha fundo e borda dourados sempre, lendo como estado ativo | todas as abas têm a mesma forma neutra; a matéria se distingue por um ponto dourado de 6 px, e o ativo é o mesmo para todas |
+| Menu do cabeçalho "muito ruim" | lista corrida de 8 links, sem grupos nem indicação da página atual | três grupos com separador, linhas de 44 px e `data-active`/`aria-current` no link da página |
+
 ## O que está entregue
 
 Resumo; o detalhe fica em `estado-atual.md`.
@@ -186,6 +200,7 @@ continua legível na nuvem.
 
 | Data | Título | Repositório |
 | --- | --- | --- |
+| 11/11 22:40 | ✨ Fábrica 3D — menu mobile e badges | este |
 | 11/11 21:00 | ✨ Fábrica 3D — matérias e fotos do envase | este |
 | 11/11 15:59 | ✨ Fábrica 3D | este (criou o projeto) |
 | 04/11 10:49 | 🔧 Store77 | store77 |

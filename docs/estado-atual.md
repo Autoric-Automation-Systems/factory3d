@@ -27,6 +27,7 @@ que está implementado no código. Atualizar a cada entrega.
 | Home | pronto | Imagem `brand/hero.jpg` no topo, atrás de véu de contraste |
 | Cards de mapa | pronto | Fotos em `public/maps` (créditos em `CREDITS.md`), resolvidas por `publicAsset()` |
 | Ajuda | pronto | Passos, legenda e atalhos na gaveta do trilho e no menu do jogo |
+| Navegação no celular | pronto | Trilho vira gaveta sobreposta (≤900 px) com lockup, rótulos e fecho por toque fora; menu do cabeçalho agrupado e com página atual marcada |
 | Leitura confortável | pronto | `A−`/`A+` na barra fixa do painel, escala persistida no navegador |
 
 ## Decisões de projeto

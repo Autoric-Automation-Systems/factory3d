@@ -898,49 +898,41 @@ input[type="email"] {
   border-color: rgba(53, 208, 127, 0.35);
 }
 
-/* Disciplina é conteúdo, não navegação: fica visualmente distinta das abas de bloco. */
+/* Matéria é uma aba como as outras: o dourado fica só no marcador, para não
+   parecer que está selecionada antes do clique. */
 .tab[data-kind="materia"] {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 13px;
-  border-radius: 999px;
-  border-color: rgba(255, 197, 61, 0.4);
-  background: rgba(255, 197, 61, 0.07);
-  color: #ffd98a;
-  font-weight: 700;
+  gap: 6px;
 }
 
-.tab[data-kind="materia"]:hover {
-  background: rgba(255, 197, 61, 0.14);
+.tab-dot {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 197, 61, 0.5);
 }
 
-.tab[data-kind="materia"][data-active="true"] {
-  background: rgba(255, 197, 61, 0.2);
-  border-color: var(--accent);
-  color: #fff2cf;
-}
-
-.tab-tag {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 2px 5px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.35);
-  color: #ffd98a;
+.tab[data-kind="materia"][data-active="true"] .tab-dot {
+  background: var(--accent);
 }
 
 .tab-count {
   font-size: 10px;
-  min-width: 17px;
-  height: 17px;
+  min-width: 20px;
+  height: 16px;
+  padding: 0 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--muted);
+}
+
+.tab[data-active="true"] .tab-count {
+  background: rgba(0, 0, 0, 0.25);
   color: #ffe6b0;
 }
 
@@ -1773,7 +1765,13 @@ a.map-card:hover {
   border-bottom-width: 2px;
 }
 
-@media (max-width: 720px) {
+/* Fora do mobile não existe gaveta: o scrim só é montado com o trilho aberto. */
+.rail-scrim {
+  display: none;
+}
+
+/* Trilho estreito vira gaveta sobreposta: os rótulos só aparecem quando abre. */
+@media (max-width: 900px) {
   .rail {
     flex-basis: 62px;
     width: 62px;
@@ -1782,6 +1780,7 @@ a.map-card:hover {
   .rail-brand {
     justify-content: center;
     padding: 0;
+    gap: 0;
   }
   .rail-brand .rail-label,
   .rail-chevron {
@@ -1791,15 +1790,51 @@ a.map-card:hover {
     justify-content: center;
     padding: 0;
   }
+  .rail-user {
+    display: none;
+  }
+
   .shell.is-open .rail {
     position: absolute;
     inset: 0 auto 0 0;
     flex-basis: 224px;
     width: 224px;
+    padding: 12px 10px;
     box-shadow: 24px 0 60px rgba(0, 0, 0, 0.5);
   }
-  .rail-user {
-    display: none;
+  .shell.is-open .rail-brand {
+    justify-content: flex-start;
+    padding: 0 10px;
+    gap: 10px;
+  }
+  /* aberto: o lockup ocupa o lugar do símbolo, senão a barra fica sem marca */
+  .shell.is-open .rail-brand .rail-label {
+    display: flex;
+  }
+  .shell.is-open .rail-chevron {
+    display: block;
+  }
+  .shell.is-open .rail-item {
+    justify-content: flex-start;
+    padding: 0 12px;
+  }
+  .shell.is-open .rail-user {
+    display: flex;
+  }
+
+  .rail-scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 55;
+    background: rgba(3, 6, 8, 0.55);
+    animation: fade-in 0.16s ease;
+  }
+
+  /* a gaveta cobre também o trilho: 100% dentro do palco deixava uma faixa */
+  .drawer-layer {
+    position: fixed;
+    z-index: 70;
   }
   .map-drawer {
     width: 100%;
@@ -1958,6 +1993,7 @@ a.map-card:hover {
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.5);
   max-height: calc(100dvh - 60px);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .mobile-nav-head {
@@ -1981,10 +2017,8 @@ a.map-card:hover {
 }
 
 .mobile-nav-exit {
-  padding: 13px 12px;
-  margin-top: 6px;
-  border-top: 1px solid var(--line);
-  border-radius: 0;
+  margin-top: 4px;
+  border-radius: 10px;
   color: var(--muted);
 }
 
@@ -2011,12 +2045,19 @@ a.map-card:hover {
     display: block;
   }
 
+  .mobile-nav-group + .mobile-nav-group {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+
   .mobile-nav a,
   .mobile-nav button {
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 13px 12px;
+    min-height: 44px;
+    padding: 0 12px;
     border: 0;
     border-radius: 10px;
     background: transparent;
@@ -2029,8 +2070,13 @@ a.map-card:hover {
   }
 
   .mobile-nav a:hover,
-  .mobile-nav button:hover {
+  .mobile-nav button:hover,
+  .mobile-nav a[data-active="true"] {
     background: var(--panel-2);
+  }
+
+  .mobile-nav a[data-active="true"] {
+    color: var(--text);
   }
 
   .mobile-nav .btn {
