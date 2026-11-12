@@ -9,9 +9,11 @@ que está implementado no código. Atualizar a cada entrega.
 | --- | --- | --- |
 | Mundo 3D navegável | pronto | Galpão 66×26 m, 10 máquinas procedurais, esteira animada, etiquetas 3D |
 | Primeira pessoa | pronto | Desktop (mouse + WASD) e celular (joystick + arrastar) |
-| Tour interativo | pronto | Painel por estação com 4 blocos de conteúdo, segurança e falhas |
-| Visto por item | pronto | Botão explícito por bloco e também em Segurança e Falhas comuns |
-| Progresso por usuário | pronto | 10% abrir + 70% itens lidos (blocos + segurança + falhas) + 20% quiz |
+| Tour interativo | pronto | Painel por estação com 4 blocos de processo, abas por matéria, segurança e falhas |
+| Matérias por disciplina | pronto | Cada estação tem 12–17 tópicos divididos em disciplinas, com nível 1–3; aba no painel e página `/materias` |
+| Barra do painel | pronto | Cabeçalho fixo com `A−`/`A+`, favoritar e fechar sempre visíveis ao rolar |
+| Visto por item | pronto | Botão explícito por bloco, por tópico de matéria, em Segurança e em Falhas comuns |
+| Progresso por usuário | pronto | 10% abrir + 70% itens lidos (blocos + matérias + segurança + falhas) + 20% quiz |
 | Troféus | pronto | Bronze/Prata/Ouro por módulo + percentual geral |
 | Favoritos | pronto | Marcação na estação e página dedicada |
 | Quiz | pronto | 3 questões por estação, correção imediata, melhor nota salva |
@@ -25,7 +27,7 @@ que está implementado no código. Atualizar a cada entrega.
 | Home | pronto | Imagem `brand/hero.jpg` no topo, atrás de véu de contraste |
 | Cards de mapa | pronto | Fotos em `public/maps` (créditos em `CREDITS.md`), resolvidas por `publicAsset()` |
 | Ajuda | pronto | Passos, legenda e atalhos na gaveta do trilho e no menu do jogo |
-| Leitura confortável | pronto | `A−`/`A+` no painel da estação, escala persistida no navegador |
+| Leitura confortável | pronto | `A−`/`A+` na barra fixa do painel, escala persistida no navegador |
 
 ## Decisões de projeto
 
@@ -59,8 +61,8 @@ que está implementado no código. Atualizar a cada entrega.
 - Só a linha de água está publicada; as outras existem como catálogo "em breve".
 - Sem testes automatizados; validação foi manual no navegador.
 - Sem som, sem narração, sem trilha.
-- Acessibilidade do 3D é limitada: quem não joga ainda depende da lista de
-  estações (`/modulos/agua`) para chegar ao conteúdo.
+- Acessibilidade do 3D é limitada: quem não joga chega ao conteúdo pela lista
+  de estações (`/modulos/agua`) ou pela página de matérias (`/materias`).
 
 ## Próximos passos priorizados
 

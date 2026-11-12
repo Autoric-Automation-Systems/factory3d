@@ -16,12 +16,16 @@ export type ProgressMap = Record<string, StationProgress>;
 export const REVIEW_TABS = ["seguranca", "falhas"] as const;
 
 export function stationChecklist(station: Station): string[] {
-  return [...station.blocks.map((block) => block.id), ...REVIEW_TABS];
+  return [
+    ...station.blocks.map((block) => block.id),
+    ...station.materias.map((topic) => topic.id),
+    ...REVIEW_TABS,
+  ];
 }
 
 /**
- * 10% por abrir a estação, até 70% pelos itens lidos (blocos + segurança + falhas)
- * e 20% pelo quiz.
+ * 10% por abrir a estação, até 70% pelos itens lidos (blocos, matérias, segurança
+ * e falhas) e 20% pelo quiz.
  */
 export function stationPercent(station: Station, progress?: StationProgress): number {
   if (!progress?.visited) return 0;

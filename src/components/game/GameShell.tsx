@@ -287,8 +287,6 @@ export default function GameShell({
         <StationPanel
           key={openStation.id}
           station={openStation}
-          stations={stations}
-          percents={percents}
           moduleName={`${module.name} · ${userName}`}
           percent={percents[openStation.id] ?? 0}
           seenBlocks={progress[openStation.id]?.seenBlocks ?? []}
@@ -299,10 +297,6 @@ export default function GameShell({
           onSeen={(blockId) => markSeen(openStation, blockId)}
           onQuiz={(score) => saveQuiz(openStation, score)}
           onFavorite={() => toggleFavorite(openStation.id)}
-          onOpenStation={(stationId) => {
-            const target = stations.find((item) => item.id === stationId);
-            if (target) openStationById(target);
-          }}
         />
       )}
 

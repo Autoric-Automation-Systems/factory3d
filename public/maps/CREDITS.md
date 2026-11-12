@@ -7,11 +7,11 @@ ou redistribuir as imagens.
 
 | arquivo | original | licença | autor |
 | --- | --- | --- | --- |
-| `agua.jpg` | [Kangso Yaksu Mineral Water Bottling Plant (11360507045).jpg](https://commons.wikimedia.org/wiki/File:Kangso_Yaksu_Mineral_Water_Bottling_Plant_(11360507045).jpg) | CC BY-SA 2.0 | Clay Gilliland |
-| `refrigerante.jpg` | [Tallulah Coca-Cola Bottling Plant 08.jpg](https://commons.wikimedia.org/wiki/File:Tallulah_Coca-Cola_Bottling_Plant_08.jpg) | Public domain | Donna Fricker |
-| `cerveja.jpg` | [Zhaoqing Brewery bottling line 1999.jpg](https://commons.wikimedia.org/wiki/File:Zhaoqing_Brewery_bottling_line_1999.jpg) | CC BY-SA 3.0 | Whoisgalt |
-| `molho-de-tomate.jpg` | [FMIB 45013 Putting Sauce in Cans for Tomato Pack.jpeg](https://commons.wikimedia.org/wiki/File:FMIB_45013_Putting_Sauce_in_Cans_for_Tomato_Pack.jpeg) | Public domain | Unknown authorUnknown author |
-| `azeite.jpg` | [Aceite de Oliva Virgen Extra DOP Priego de Córdoba.jpg](https://commons.wikimedia.org/wiki/File:Aceite_de_Oliva_Virgen_Extra_DOP_Priego_de_C%C3%B3rdoba.jpg) | CC BY-SA 4.0 | AceiteVirgenExtraPriego |
+| `agua.jpg` | [Kangso Mineral Water Bottling Factory - 06.jpg](https://commons.wikimedia.org/wiki/File:Kangso_Mineral_Water_Bottling_Factory_-_06.jpg) | CC BY-SA 4.0 | Jan Engelhardt |
+| `refrigerante.jpg` | [Dr Browns line 12oz.jpg](https://commons.wikimedia.org/wiki/File:Dr_Browns_line_12oz.jpg) | CC BY-SA 3.0 | Mynameischance |
+| `cerveja.jpg` | [Ayinger Privatbrauerei - Flaschenabfüllung - Panorama (3).jpg](https://commons.wikimedia.org/wiki/File:Ayinger_Privatbrauerei_-_Flaschenabf%C3%BCllung_-_Panorama_(3).jpg) | CC BY-SA 4.0 | 1971markus |
+| `molho-de-tomate.jpg` | [Production of tomato paste with processing industries 13 (2025) Tasnim.jpg](https://commons.wikimedia.org/wiki/File:Production_of_tomato_paste_with_processing_industries_13_(2025)_Tasnim.jpg) | CC BY 4.0 | Fahimeh Farrokhi |
+| `azeite.jpg` | [Modern olive oil mill.jpg](https://commons.wikimedia.org/wiki/File:Modern_olive_oil_mill.jpg) | CC BY-SA 4.0 | Amenduni |
 | `carro-combustao.jpg` | [002 Production line - car assembly line in General Motors Manufacturing Poland - Gliwice, Poland.jpg](https://commons.wikimedia.org/wiki/File:002_Production_line_-_car_assembly_line_in_General_Motors_Manufacturing_Poland_-_Gliwice,_Poland.jpg) | CC BY 3.0 | Marek Ślusarczyk (Tupungato) Photo portfolio |
 | `carro-eletrico.jpg` | [18650 and 21700 lithium ion battery cell.jpg](https://commons.wikimedia.org/wiki/File:18650_and_21700_lithium_ion_battery_cell.jpg) | CC0 | Sevenethics |
 | `moto.jpg` | [Ardilla assembly 50s.JPG](https://commons.wikimedia.org/wiki/File:Ardilla_assembly_50s.JPG) | CC BY-SA 3.0 | Peprovira |

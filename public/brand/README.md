@@ -11,7 +11,7 @@ public/
 │   ├── logo-name-wide.png  lockup horizontal, gerado — usado no header, trilho e login
 │   ├── logo-icon.png       ícone quadrado com respiro, gerado — favicon e telas de apoio
 │   ├── dev-logo.png        logo da Autoric com assinatura (fonte do crédito)
-│   ├── dev-mark.png        símbolo + AUTORIC, gerado — crédito no footer
+│   ├── dev-mark.png        símbolo da Autoric, gerado — crédito no footer
 │   └── hero.jpg            imagem de fundo da home
 ├── icons/
 │   ├── favicon.ico

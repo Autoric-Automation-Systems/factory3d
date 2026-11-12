@@ -61,6 +61,9 @@ export default async function ModulePage({
           <Link href={`/jogar/${mod.slug}`} className="btn btn-primary">
             Entrar na fábrica
           </Link>
+          <Link href="/materias" className="btn">
+            Matérias da linha
+          </Link>
           {mod.goals && (
             <span className="small muted">
               Objetivos: {mod.goals.join(" · ")}
@@ -93,6 +96,9 @@ export default async function ModulePage({
                     </span>
                   ))}
                   <span className="badge">{station.minutes} min</span>
+                  <span className="badge badge-accent">
+                    {station.materias.length} tópicos
+                  </span>
                 </div>
               </div>
             </Link>

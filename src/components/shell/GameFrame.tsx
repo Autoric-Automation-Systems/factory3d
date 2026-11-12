@@ -55,6 +55,15 @@ function IconTrophy() {
   );
 }
 
+function IconBook() {
+  return (
+    <svg width={20} height={20} {...S} aria-hidden="true">
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4V5.5Z" />
+      <path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6V5.5Z" />
+    </svg>
+  );
+}
+
 function IconCard() {
   return (
     <svg width={20} height={20} {...S} aria-hidden="true">
@@ -183,6 +192,10 @@ export default function GameFrame({
               M
             </span>
           </button>
+          <Link className="rail-item" href="/materias" title="Matérias">
+            <IconBook />
+            <span className="rail-label">Matérias</span>
+          </Link>
           <Link className="rail-item" href="/favoritos" title="Favoritos">
             <IconStar />
             <span className="rail-label">Favoritos</span>

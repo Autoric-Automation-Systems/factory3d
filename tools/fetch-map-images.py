@@ -19,19 +19,19 @@ API = "https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=ima
 UA = "Factory3D/1.0 (educational; dev@factory3d.app.br)"
 
 SOURCES = [
-    {slug: "agua", file: "Kangso Yaksu Mineral Water Bottling Plant (11360507045).jpg"},
-    {slug: "refrigerante", file: "Tallulah Coca-Cola Bottling Plant 08.jpg"},
-    {slug: "cerveja", file: "Zhaoqing Brewery bottling line 1999.jpg"},
-    {slug: "molho-de-tomate", file: "FMIB 45013 Putting Sauce in Cans for Tomato Pack.jpeg"},
-    {slug: "azeite", file: "Aceite de Oliva Virgen Extra DOP Priego de Córdoba.jpg"},
-    {slug: "carro-combustao", file: "002 Production line - car assembly line in General Motors Manufacturing Poland - Gliwice, Poland.jpg"},
-    {slug: "carro-eletrico", file: "18650 and 21700 lithium ion battery cell.jpg"},
-    {slug: "moto", file: "Ardilla assembly 50s.JPG"},
-    {slug: "bicicleta", file: "1896 Bicycle factory assembly room.png"},
-    {slug: "geladeira", file: "French Refrigerator Plant Increases its Productivity - DPLA - 95f3ac5808bd87d40bb4379003218b75.jpg"},
-    {slug: "tv", file: "Tv Assembly Line 1.jpg"},
-    {slug: "pc", file: "RS 42471-12 PCB 02.jpg"},
-    {slug: "notebook", file: "Dulmont Magnum Kookaburra Laptop PCB.jpg"}
+    {"slug": "agua", "file": "Kangso Mineral Water Bottling Factory - 06.jpg"},
+    {"slug": "refrigerante", "file": "Dr Browns line 12oz.jpg"},
+    {"slug": "cerveja", "file": "Ayinger Privatbrauerei - Flaschenabfüllung - Panorama (3).jpg"},
+    {"slug": "molho-de-tomate", "file": "Production of tomato paste with processing industries 13 (2025) Tasnim.jpg"},
+    {"slug": "azeite", "file": "Modern olive oil mill.jpg"},
+    {"slug": "carro-combustao", "file": "002 Production line - car assembly line in General Motors Manufacturing Poland - Gliwice, Poland.jpg"},
+    {"slug": "carro-eletrico", "file": "18650 and 21700 lithium ion battery cell.jpg"},
+    {"slug": "moto", "file": "Ardilla assembly 50s.JPG"},
+    {"slug": "bicicleta", "file": "1896 Bicycle factory assembly room.png"},
+    {"slug": "geladeira", "file": "French Refrigerator Plant Increases its Productivity - DPLA - 95f3ac5808bd87d40bb4379003218b75.jpg"},
+    {"slug": "tv", "file": "Tv Assembly Line 1.jpg"},
+    {"slug": "pc", "file": "RS 42471-12 PCB 02.jpg"},
+    {"slug": "notebook", "file": "Dulmont Magnum Kookaburra Laptop PCB.jpg"}
 ]
 
 

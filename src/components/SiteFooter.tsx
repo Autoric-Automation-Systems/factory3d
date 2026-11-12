@@ -38,7 +38,13 @@ export default function SiteFooter() {
             title="Autoric Automação e Sistemas"
           >
             {brand.devMark && (
-              <img className="footer-dev-mark" src={brand.devMark} alt="" width={157} height={22} />
+              <img
+                className="footer-dev-mark"
+                src={brand.devMark}
+                alt=""
+                width={28}
+                height={26}
+              />
             )}
             <span>
               <strong>Autoric Automação e Sistemas</strong>

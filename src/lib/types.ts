@@ -37,6 +37,20 @@ export type MachineKind =
   | "palletizer"
   | "wrapper";
 
+/**
+ * Conteúdo de matéria: um recorte técnico da estação dentro de uma disciplina.
+ * `level` é a complexidade (1 fundamento, 2 operação, 3 diagnóstico) e define a
+ * ordem de leitura — a primeira matéria lida é sempre a mais simples.
+ */
+export type MateriaTopic = {
+  id: string;
+  discipline: DisciplineId;
+  level: 1 | 2 | 3;
+  title: string;
+  summary: string;
+  bullets: string[];
+};
+
 export type Station = {
   id: string;
   name: string;
@@ -47,6 +61,7 @@ export type Station = {
   position: [number, number];
   specs: { label: string; value: string }[];
   blocks: ContentBlock[];
+  materias: MateriaTopic[];
   safety: string[];
   faults: { symptom: string; cause: string; check: string }[];
   quiz: QuizQuestion[];

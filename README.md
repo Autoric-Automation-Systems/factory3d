@@ -101,6 +101,7 @@ src/
     entrar/                  login
     hub/                     painel do jogador
     modulos/[slug]/          lista de estações do módulo
+    materias/                conteúdo por disciplina (todas as estações)
     jogar/[slug]/            jogo 3D (canvas + HUD)
     favoritos/  conquistas/  precos/
     api/progress|favorites|state|reset|auth
@@ -109,9 +110,9 @@ src/
     SiteHeader, AdSlot
   content/
     catalog.ts               catálogo de linhas e módulos
-    envase/agua/01..08       conteúdo técnico das estações
+    envase/agua/01..10       conteúdo técnico das estações
   lib/
-    types.ts  store.ts  progress.ts  session.ts
+    types.ts  store.ts  progress.ts  session.ts  materias.ts
   auth.ts                    NextAuth (Google + demonstração)
 ```
 
@@ -123,9 +124,18 @@ Cada estação é um objeto em `src/content/envase/agua/*.ts`:
 {
   id, name, role, disciplines, minutes, machine,
   position: [x, z],            // posição no galpão
-  specs, blocks[], safety[], faults[], quiz[], videoNote
+  specs, blocks[], safety[], faults[], quiz[], videoNote,
+  materias[]                   // recortes por disciplina
 }
 ```
+
+`blocks` conta a estação do ponto de vista do processo. `materias` quebra a
+mesma estação por disciplina (`mecanica`, `pneumatica`, `eletrica`,
+`automacao`, `eletronica`, `hidraulica`, `qualidade`, `operacao`, `seguranca`).
+Cada tópico é `{ id, discipline, level, title, summary, bullets[] }`, com
+`level` 1–3 (fundamento, operação, diagnóstico) definindo a ordem de leitura.
+Os tópicos entram no progresso da estação: `stationChecklist` em
+`lib/progress.ts` soma blocos, matérias e as abas de revisão.
 
 Para criar uma estação nova, copie um arquivo existente, ajuste o conteúdo e
 registre no `catalog.ts`. A posição `[x, z]` define onde a máquina aparece no

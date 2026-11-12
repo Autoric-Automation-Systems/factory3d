@@ -8,7 +8,7 @@ Fontes (não geradas):
 Derivados:
   public/brand/logo-name-wide.png  lockup horizontal do app (header, trilho, login)
   public/brand/logo-icon.png       símbolo quadrado com respiro (rodapé, PWA)
-  public/brand/dev-mark.png        símbolo + AUTORIC, sem a assinatura miúda
+  public/brand/dev-mark.png        símbolo da Autoric, para o crédito no rodapé
 
 Uso: python3 tools/make-brand.py   (requer Pillow)
 """
@@ -78,12 +78,10 @@ def write_lockup(mark: Image.Image, word: Image.Image) -> None:
 
 
 def write_dev_mark() -> None:
-    """Recorta símbolo + AUTORIC do logo da Autoric, descartando a assinatura."""
+    """Recorta só o símbolo da Autoric; o nome fica em texto no rodapé."""
     full = Image.open(BRAND / "dev-logo.png").convert("RGBA")
     alpha = full.split()[-1]
 
-    # o símbolo é mais alto que as letras, então a assinatura é detectada só na
-    # coluna à direita dele, onde as linhas de texto ficam separadas por respiro
     columns = [
         x
         for x in range(full.width)
@@ -93,20 +91,10 @@ def write_dev_mark() -> None:
         (x for previous, x in zip(columns, columns[1:]) if x - previous > 12),
         full.width // 3,
     )
-    text = alpha.crop((gap_column, 0, full.width, full.height))
-    filled = [
-        y for y in range(text.height) if text.crop((0, y, text.width, y + 1)).getbbox() is not None
-    ]
-    if not filled:
-        raise SystemExit("dev-logo.png vazio")
+    mark = tight(full.crop((0, 0, gap_column, full.height)))
+    if not mark.width:
+        raise SystemExit("symbol region empty in dev-logo.png")
 
-    bottom = filled[-1] + 1
-    for previous, current in zip(filled, filled[1:]):
-        if current - previous > 12:
-            bottom = previous + 1
-            break
-
-    mark = tight(full.crop((0, 0, full.width, bottom)))
     width = round(mark.width * DEV_HEIGHT / mark.height)
     path = BRAND / "dev-mark.png"
     mark.resize((width, DEV_HEIGHT), Image.LANCZOS).save(path)

@@ -49,6 +49,7 @@ export default function SiteNav({ user, percent, firstModule }: Props) {
           <>
             <Link href="/hub">Início</Link>
             <Link href={`/modulos/${firstModule}`}>Estações</Link>
+            <Link href="/materias">Matérias</Link>
             <Link href="/favoritos">Favoritos</Link>
             <Link href="/conquistas">Conquistas</Link>
             <Link href="/precos">Planos</Link>
@@ -121,6 +122,7 @@ export default function SiteNav({ user, percent, firstModule }: Props) {
             </div>
             <Link href="/hub">Início</Link>
             <Link href={`/modulos/${firstModule}`}>Estações</Link>
+            <Link href="/materias">Matérias</Link>
             <Link href="/favoritos">Favoritos</Link>
             <Link href="/conquistas">Conquistas</Link>
             <Link href="/precos">Planos</Link>
